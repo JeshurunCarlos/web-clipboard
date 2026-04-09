@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CloudClip</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f5f2ee;--surface:#faf8f5;--surface2:#edeae5;--border:#ddd9d3;--text:#2c2926;--muted:#9a948c;--accent:#5c7a6e;--accent-light:#e8f0ed;--red:#c0544a;--red-light:#fdf0ef;--amber:#b07d2e;--amber-light:#fdf3e3;--blue:#3a6b9e;--blue-light:#e8f0f8;--radius:10px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'IBM Plex Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;font-size:13.5px}
+body::before{content:'';position:fixed;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 24px,rgba(0,0,0,.018) 24px,rgba(0,0,0,.018) 25px);pointer-events:none;z-index:0}
+.wrap{position:relative;z-index:1;max-width:740px;margin:0 auto;padding:40px 24px 80px}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;animation:up .5s ease both}
+.brand{display:flex;align-items:baseline;gap:10px}
+.brand-name{font-family:'Fraunces',serif;font-size:26px;font-weight:500;letter-spacing:-.5px}
+.brand-name em{font-style:italic;color:var(--accent)}
+.brand-tag{font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+.header-right{display:flex;align-items:center;gap:12px}
+.status-row{display:flex;align-items:center;gap:7px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--border);transition:background .4s}
+.dot.ok{background:var(--accent)}.dot.err{background:var(--red)}
+.status-txt{font-size:11px;color:var(--muted)}
+/* stats */
+.stats-bar{display:flex;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:14px;animation:up .5s .04s ease both}
+.stat{flex:1;padding:11px 14px;border-right:1px solid var(--border)}
+.stat:last-child{border-right:none}
+.stat-val{font-family:'Fraunces',serif;font-size:20px;font-weight:300;color:var(--text);line-height:1}
+.stat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-top:3px}
+.stat-sub{font-size:9px;color:var(--muted);margin-top:2px}
+/* card */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;margin-bottom:14px}
+.card-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+/* fields */
+.fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+@media(max-width:540px){.fields-grid{grid-template-columns:1fr}}
+.field label{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px}
+.field input,.room-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none;transition:border-color .2s,box-shadow .2s}
+.field input:focus,.room-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(92,122,110,.1)}
+.field input::placeholder,.room-input::placeholder{color:var(--muted);opacity:.5}
+/* buttons */
+.btn-row{display:flex;gap:10px;flex-wrap:wrap}
+.btn{padding:9px 16px;border-radius:8px;border:1px solid transparent;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;transition:all .16s;white-space:nowrap}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--accent);color:#fff;border-color:var(--accent)}.btn-primary:hover{background:#4a6a5e}
+.btn-ghost{background:transparent;color:var(--muted);border-color:var(--border)}.btn-ghost:hover{color:var(--text);border-color:#b0aca5}
+.btn-danger{background:transparent;color:var(--red);border-color:#e0b8b5}.btn-danger:hover{background:var(--red-light)}
+.btn-sm{padding:6px 11px;font-size:11px}
+/* hint */
+.hint{margin-top:12px;font-size:11px;color:var(--muted);line-height:1.75}
+.hint a{color:var(--accent);text-decoration:none}.hint a:hover{text-decoration:underline}
+.sql{margin-top:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 13px;font-size:11px;line-height:1.9;color:var(--text);white-space:pre;overflow-x:auto}
+/* room */
+.room-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.room-row .room-input{flex:1;min-width:160px;font-size:13px}
+.room-active{font-size:11px;color:var(--muted);margin-top:8px}
+.room-active span{color:var(--accent)}
+/* compose */
+.compose-top{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
+.tag-input{flex:1;min-width:140px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:7px 11px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:12px;outline:none;transition:border-color .2s}
+.tag-input:focus{border-color:var(--accent)}
+.tag-input::placeholder{color:var(--muted);opacity:.5}
+.ta-wrap{position:relative}
+textarea{width:100%;min-height:120px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;resize:vertical;outline:none;transition:border-color .2s}
+textarea:focus{border-color:var(--accent)}
+textarea::placeholder{color:var(--muted);opacity:.5}
+.char{position:absolute;bottom:10px;right:12px;font-size:10px;color:var(--muted);pointer-events:none}
+.compose-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+.type-detect{font-size:10px;color:var(--muted);margin-left:auto;padding:4px 8px;background:var(--surface2);border-radius:5px;border:1px solid var(--border)}
+/* toolbar */
+.toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;animation:up .5s .18s ease both}
+.search-wrap{position:relative;flex:1;min-width:160px}
+.search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px 8px 30px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:12px;outline:none;transition:border-color .2s}
+.search-wrap input:focus{border-color:var(--accent)}
+.search-wrap input::placeholder{color:var(--muted);opacity:.5}
+.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--muted);font-size:12px;pointer-events:none}
+.filter-btns{display:flex;gap:5px}
+.flt{padding:6px 10px;border-radius:7px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;transition:all .15s}
+.flt:hover{color:var(--text);border-color:var(--accent)}
+.flt.active{background:var(--accent-light);color:var(--accent);border-color:var(--accent)}
+.sort-sel{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 9px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:11px;outline:none;cursor:pointer}
+/* clips header */
+.clips-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;animation:up .5s .2s ease both}
+.clips-title{font-family:'Fraunces',serif;font-size:18px;font-weight:300}
+.count{font-size:11px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:100px;padding:3px 10px}
+hr{border:none;border-top:1px solid var(--border);margin-bottom:14px}
+/* clip */
+.clip{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 17px;margin-bottom:10px;transition:border-color .2s;animation:up .3s ease both;position:relative}
+.clip:hover{border-color:#c5c0b8}
+.clip.pinned{border-left:3px solid var(--amber)}
+.clip-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px}
+.clip-meta{display:flex;flex-direction:column;gap:3px;min-width:0}
+.clip-time{font-size:10px;color:var(--muted)}
+.clip-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:3px}
+.tag{font-size:9px;padding:2px 7px;border-radius:100px;background:var(--surface2);border:1px solid var(--border);color:var(--muted)}
+.clip-type-badge{font-size:9px;padding:2px 7px;border-radius:5px;font-weight:500;margin-right:4px}
+.type-url{background:var(--blue-light);color:var(--blue);border:1px solid #c5d8ee}
+.type-code{background:#f0f0f8;color:#5a4f8a;border:1px solid #d8d4ee}
+.clip-btns{display:flex;gap:5px;flex-shrink:0}
+/* icon btn + copy tooltip */
+.ibw{position:relative;display:inline-block}
+.icon-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;display:grid;place-items:center;font-size:12px;transition:all .16s;font-family:inherit}
+.icon-btn:hover{color:var(--text);border-color:var(--accent);background:var(--accent-light)}
+.icon-btn.ok{color:var(--accent);border-color:var(--accent);background:var(--accent-light)}
+.icon-btn.pinbtn{color:var(--amber);border-color:var(--amber);background:var(--amber-light)}
+.icon-btn.del:hover{color:var(--red);border-color:#dba8a4;background:var(--red-light)}
+/* floating copy tooltip */
+.ctip{position:absolute;top:50%;right:calc(100% + 8px);transform:translateY(-50%);background:var(--accent);color:#fff;font-size:10px;padding:4px 9px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .18s;font-family:'IBM Plex Mono',monospace;z-index:60}
+.ctip::after{content:'';position:absolute;left:100%;top:50%;transform:translateY(-50%);border:5px solid transparent;border-left-color:var(--accent)}
+.ctip.show{opacity:1}
+/* hover label */
+.hlabel{position:absolute;top:50%;right:calc(100% + 8px);transform:translateY(-50%);background:var(--text);color:#fff;font-size:10px;padding:3px 8px;border-radius:5px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .12s .25s;font-family:'IBM Plex Mono',monospace;z-index:60}
+.hlabel::after{content:'';position:absolute;left:100%;top:50%;transform:translateY(-50%);border:4px solid transparent;border-left-color:var(--text)}
+.ibw:hover .hlabel{opacity:1}
+/* clip body */
+.clip-body{font-size:12.5px;line-height:1.7;color:#5a5450;white-space:pre-wrap;word-break:break-word;max-height:90px;overflow:hidden;transition:max-height .3s ease}
+.clip-body.open{max-height:600px}
+.expand-btn{margin-top:4px;font-size:11px;color:var(--accent);cursor:pointer;background:none;border:none;font-family:inherit;padding:0}
+.expand-btn:hover{text-decoration:underline}
+/* empty */
+.empty{text-align:center;padding:44px 20px;color:var(--muted)}
+.empty-icon{font-size:28px;margin-bottom:10px;opacity:.4}
+.empty p{font-size:12px;line-height:1.8}
+/* toasts */
+.toasts{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:7px}
+.toast{padding:9px 16px;border-radius:8px;font-size:12px;border:1px solid;animation:slide-in .22s ease both;max-width:280px}
+.toast.ok{background:#eef4f1;border-color:#b8d4c8;color:var(--accent)}
+.toast.err{background:var(--red-light);border-color:#e8b4b0;color:var(--red)}
+.toast.info{background:var(--surface);border-color:var(--border);color:var(--muted)}
+.toast.warn{background:var(--amber-light);border-color:#e0c98a;color:var(--amber)}
+/* modals */
+.modal-bg{position:fixed;inset:0;background:rgba(44,41,38,.38);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fade-in .18s ease both}
+.modal-bg.hidden{display:none}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;max-width:360px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.1);animation:pop-in .2s ease both}
+.modal h3{font-family:'Fraunces',serif;font-size:18px;font-weight:300;margin-bottom:8px}
+.modal-preview{font-size:11px;color:var(--muted);background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:9px 11px;margin-bottom:12px;max-height:72px;overflow:hidden;white-space:pre-wrap;word-break:break-word;line-height:1.5}
+.modal p{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:16px}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end}
+/* drawer */
+.drawer-bg{position:fixed;inset:0;background:rgba(44,41,38,.28);z-index:300;animation:fade-in .2s ease both}
+.drawer-bg.hidden{display:none}
+.drawer{position:fixed;right:0;top:0;bottom:0;width:min(420px,95vw);background:var(--surface);border-left:1px solid var(--border);padding:26px 22px;overflow-y:auto;animation:slide-right .24s ease both;z-index:301}
+.drawer-close{position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;display:grid;place-items:center;font-size:14px;font-family:inherit}
+.drawer-close:hover{color:var(--text)}
+.drawer h3{font-family:'Fraunces',serif;font-size:20px;font-weight:300;margin-bottom:18px;padding-right:38px}
+.d-section{margin-bottom:18px}
+.d-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:6px}
+.d-val{font-size:12px;color:var(--text);line-height:1.7;word-break:break-word;white-space:pre-wrap;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:10px 12px}
+.d-row{display:flex;gap:7px;flex-wrap:wrap}
+.d-pill{font-size:11px;padding:3px 10px;border-radius:100px;background:var(--surface2);border:1px solid var(--border);color:var(--muted)}
+.d-pill.green{background:var(--accent-light);border-color:#b8d4c8;color:var(--accent)}
+/* keyframes */
+@keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slide-in{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
+@keyframes pop-in{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+@keyframes fade-in{from{opacity:0}to{opacity:1}}
+@keyframes slide-right{from{transform:translateX(100%)}to{transform:translateX(0)}}
+@keyframes flash{0%{background:var(--accent-light)}100%{background:var(--surface)}}
+.clip.new{animation:flash .9s ease both}
+</style>
+</head>
+<body>
+
+<div class="toasts" id="toasts"></div>
+
+<!-- Delete confirm modal -->
+<div class="modal-bg hidden" id="delModal">
+  <div class="modal">
+    <h3>Delete this clip?</h3>
+    <div class="modal-preview" id="delPreview"></div>
+    <p>This removes the clip from Supabase permanently across all devices.</p>
+    <div class="modal-btns">
+      <button class="btn btn-ghost btn-sm" onclick="closeDelModal()">Cancel</button>
+      <button class="btn btn-danger btn-sm" id="delConfirmBtn">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- Clear all modal -->
+<div class="modal-bg hidden" id="clearModal">
+  <div class="modal">
+    <h3>Clear all clips?</h3>
+    <p id="clearMsg">This will permanently delete all clips in this room.</p>
+    <div class="modal-btns">
+      <button class="btn btn-ghost btn-sm" onclick="document.getElementById('clearModal').classList.add('hidden')">Cancel</button>
+      <button class="btn btn-danger btn-sm" onclick="confirmClearAll()">Delete all</button>
+    </div>
+  </div>
+</div>
+
+<!-- Detail drawer -->
+<div class="drawer-bg hidden" id="drawerBg" onclick="closeDrawer(event)">
+  <div class="drawer" id="drawer">
+    <button class="drawer-close" onclick="closeDrawer(null)">✕</button>
+    <h3>Clip details</h3>
+    <div id="drawerContent"></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <div class="brand-name">Cloud<em>Clip</em></div>
+      <div class="brand-tag">· Supabase</div>
+    </div>
+    <div class="header-right">
+      <div class="status-row">
+        <div class="dot" id="dot"></div>
+        <span class="status-txt" id="statusTxt">not connected</span>
+      </div>
+      <div style="display:none" id="showSetupWrap">
+        <button class="btn btn-ghost btn-sm" onclick="toggleSetup()">⚙ Settings</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Stats -->
+  <div class="stats-bar" id="statsBar" style="display:none">
+    <div class="stat"><div class="stat-val" id="st-total">0</div><div class="stat-lbl">Clips</div></div>
+    <div class="stat"><div class="stat-val" id="st-chars">0</div><div class="stat-lbl">Chars</div><div class="stat-sub" id="st-avg"></div></div>
+    <div class="stat"><div class="stat-val" id="st-devices">0</div><div class="stat-lbl">Devices</div><div class="stat-sub" id="st-devlist" style="font-size:9px"></div></div>
+    <div class="stat"><div class="stat-val" id="st-pinned">0</div><div class="stat-lbl">Pinned</div></div>
+    <div class="stat"><div class="stat-val" id="st-today">0</div><div class="stat-lbl">Today</div><div class="stat-sub" id="st-oldest"></div></div>
+  </div>
+
+  <!-- Setup -->
+  <div class="card" id="setupCard" style="animation:up .5s ease both">
+    <div class="card-label">Supabase setup</div>
+    <div class="fields-grid">
+      <div class="field"><label>Project URL</label><input id="sbUrl" placeholder="https://xxxx.supabase.co"/></div>
+      <div class="field"><label>Anon / Public Key</label><input id="sbKey" placeholder="eyJhbGci..."/></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="connect()">Connect</button>
+      <button class="btn btn-ghost" onclick="toggleSetup()">Hide</button>
+    </div>
+    <div class="hint">
+      Get these from <a href="https://supabase.com/dashboard" target="_blank">supabase.com/dashboard</a> → Settings → API.
+      Run this SQL once in the Supabase SQL editor:
+      <div class="sql">create table clips (
+  id uuid default gen_random_uuid() primary key,
+  room text not null,
+  text text not null,
+  device text,
+  tags text[] default '{}',
+  pinned boolean default false,
+  type text default 'text',
+  copy_count integer default 0,
+  created_at timestamptz default now()
+);
+alter table clips enable row level security;
+create policy "open" on clips for all using (true) with check (true);</div>
+    </div>
+  </div>
+
+  <!-- Room -->
+  <div class="card" style="animation:up .5s .08s ease both">
+    <div class="card-label">Room</div>
+    <div class="room-row">
+      <input class="room-input" id="roomInput" placeholder="name your room (e.g. macbook-home)" maxlength="40" onkeydown="if(event.key==='Enter')joinRoom()"/>
+      <button class="btn btn-primary" onclick="joinRoom()">Join</button>
+      <button class="btn btn-ghost" onclick="randRoom()" title="Random">🎲</button>
+    </div>
+    <div class="room-active" id="roomLabel" style="display:none">
+      Active: <span id="roomName">—</span> &nbsp;·&nbsp; <span id="rtStatus" style="color:var(--muted)">realtime off</span>
+    </div>
+  </div>
+
+  <!-- Compose -->
+  <div class="card" style="animation:up .5s .14s ease both">
+    <div class="card-label">New clip</div>
+    <div class="compose-top">
+      <input class="tag-input" id="tagInput" placeholder="tags, comma separated (optional)"/>
+      <label style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap">
+        <input type="checkbox" id="pinNew" style="accent-color:var(--amber)"/> Pin this
+      </label>
+    </div>
+    <div class="ta-wrap">
+      <textarea id="clipText" placeholder="Paste or type anything — links, code, notes…" oninput="onType()"></textarea>
+      <div class="char" id="charCount">0</div>
+    </div>
+    <div class="compose-actions">
+      <button class="btn btn-primary" onclick="pushClip()">↑ Push</button>
+      <button class="btn btn-ghost" onclick="pasteSystem()">↓ Paste</button>
+      <button class="btn btn-ghost btn-sm" onclick="clearTA()">Clear</button>
+      <span class="type-detect" id="typeDetect">type: text</span>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <span class="search-icon">⌕</span>
+      <input id="searchInput" placeholder="Search clips…" oninput="applyFilter()"/>
+    </div>
+    <div class="filter-btns">
+      <button class="flt active" data-f="all" onclick="setFilter(this)">All</button>
+      <button class="flt" data-f="pinned" onclick="setFilter(this)">📌 Pinned</button>
+      <button class="flt" data-f="url" onclick="setFilter(this)">Links</button>
+      <button class="flt" data-f="code" onclick="setFilter(this)">Code</button>
+    </div>
+    <select class="sort-sel" id="sortSel" onchange="applyFilter()">
+      <option value="newest">Newest first</option>
+      <option value="oldest">Oldest first</option>
+      <option value="longest">Longest</option>
+      <option value="copied">Most copied</option>
+    </select>
+  </div>
+
+  <!-- Clips header -->
+  <div class="clips-header">
+    <div class="clips-title">Saved clips</div>
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="count" id="clipCount">0</span>
+      <button class="btn btn-ghost btn-sm" onclick="fetchClips()">↻ Refresh</button>
+      <button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="openClearModal()">Clear all</button>
+    </div>
+  </div>
+  <hr>
+  <div id="clipsList">
+    <div class="empty"><div class="empty-icon">☁</div><p>Join a room and push your first clip.<br>Syncs in real time across devices.</p></div>
+  </div>
+
+</div>
+
+<script>
+var sbUrl='',sbKey='',room='',clips=[],activeFilter='all',sbClient=null,realtimeCh=null,pendingDelId=null;
+
+function hdr(){return{'Content-Type':'application/json','apikey':sbKey,'Authorization':'Bearer '+sbKey}}
+
+function loadSaved(){
+  var c=JSON.parse(localStorage.getItem('cc_sb4')||'null');
+  if(!c)return;
+  sbUrl=c.url;sbKey=c.key;
+  document.getElementById('sbUrl').value=sbUrl;
+  document.getElementById('sbKey').value=sbKey;
+  document.getElementById('setupCard').style.display='none';
+  document.getElementById('showSetupWrap').style.display='';
+  setStatus('ok','configured');
+}
+
+async function connect(){
+  sbUrl=document.getElementById('sbUrl').value.trim().replace(/\/$/,'');
+  sbKey=document.getElementById('sbKey').value.trim();
+  if(!sbUrl||!sbKey){toast('Enter URL and key.','err');return}
+  try{
+    var r=await fetch(sbUrl+'/rest/v1/clips?limit=1',{headers:hdr()});
+    if(!r.ok)throw new Error('HTTP '+r.status+' — check credentials or run the SQL setup first.');
+    localStorage.setItem('cc_sb4',JSON.stringify({url:sbUrl,key:sbKey}));
+    setStatus('ok','connected');
+    toggleSetup();
+    toast('Connected to Supabase ✓','ok');
+    if(window.supabase)sbClient=window.supabase.createClient(sbUrl,sbKey);
+  }catch(e){setStatus('err','error');toast(e.message,'err')}
+}
+
+function toggleSetup(){
+  var card=document.getElementById('setupCard');
+  var wrap=document.getElementById('showSetupWrap');
+  var hidden=card.style.display==='none';
+  card.style.display=hidden?'':'none';
+  wrap.style.display=hidden?'none':'';
+}
+
+async function joinRoom(){
+  if(!sbKey){toast('Connect to Supabase first.','err');return}
+  var val=document.getElementById('roomInput').value.trim().replace(/[^a-z0-9_-]/gi,'-');
+  if(!val){toast('Enter a room name.','err');return}
+  room=val;
+  document.getElementById('roomName').textContent=room;
+  document.getElementById('roomLabel').style.display='';
+  await fetchClips();
+  setupRealtime();
+  toast('Joined "'+room+'"','info');
+}
+
+function randRoom(){
+  var w=['pine','mist','stone','echo','cove','reed','dusk','vale','birch','fern'];
+  document.getElementById('roomInput').value=w[Math.floor(Math.random()*w.length)]+'-'+Math.floor(100+Math.random()*900);
+}
+
+async function fetchClips(){
+  if(!room)return;
+  try{
+    var r=await fetch(sbUrl+'/rest/v1/clips?room=eq.'+encodeURIComponent(room)+'&order=created_at.desc&limit=100',{headers:hdr()});
+    if(!r.ok)throw new Error(await r.text());
+    clips=await r.json();
+    updateStats();
+    applyFilter();
+  }catch(e){toast('Load error: '+e.message,'err')}
+}
+
+function setupRealtime(){
+  if(!sbClient){document.getElementById('rtStatus').textContent='realtime unavailable';return}
+  if(realtimeCh)sbClient.removeChannel(realtimeCh);
+  realtimeCh=sbClient.channel('room:'+room)
+    .on('postgres_changes',{event:'INSERT',schema:'public',table:'clips',filter:'room=eq.'+room},function(p){
+      if(!clips.find(function(c){return c.id===p.new.id})){clips.unshift(p.new);updateStats();applyFilter(p.new.id)}
+    })
+    .on('postgres_changes',{event:'UPDATE',schema:'public',table:'clips',filter:'room=eq.'+room},function(p){
+      var i=clips.findIndex(function(c){return c.id===p.new.id});
+      if(i>-1)clips[i]=p.new;else clips.unshift(p.new);
+      updateStats();applyFilter();
+    })
+    .on('postgres_changes',{event:'DELETE',schema:'public',table:'clips',filter:'room=eq.'+room},function(p){
+      clips=clips.filter(function(c){return c.id!==p.old.id});
+      updateStats();applyFilter();
+    })
+    .subscribe(function(status){
+      var el=document.getElementById('rtStatus');
+      if(status==='SUBSCRIBED'){el.textContent='● realtime on';el.style.color='var(--accent)'}
+      else{el.textContent='connecting…';el.style.color='var(--muted)'}
+    });
+}
+
+async function pushClip(){
+  if(!room){toast('Join a room first.','err');return}
+  var text=document.getElementById('clipText').value.trim();
+  if(!text){toast('Nothing to push.','err');return}
+  var rawTags=document.getElementById('tagInput').value.trim();
+  var tags=rawTags?rawTags.split(',').map(function(t){return t.trim()}).filter(Boolean):[];
+  var pinned=document.getElementById('pinNew').checked;
+  var type=detectType(text);
+  try{
+    var r=await fetch(sbUrl+'/rest/v1/clips',{
+      method:'POST',
+      headers:Object.assign({},hdr(),{'Prefer':'return=representation'}),
+      body:JSON.stringify({room:room,text:text,device:navigator.platform||'unknown',tags:tags,pinned:pinned,type:type,copy_count:0})
+    });
+    if(!r.ok)throw new Error(await r.text());
+    var rows=await r.json();
+    var row=rows[0];
+    if(!clips.find(function(c){return c.id===row.id})){clips.unshift(row);updateStats();applyFilter(row.id)}
+    document.getElementById('clipText').value='';
+    document.getElementById('tagInput').value='';
+    document.getElementById('pinNew').checked=false;
+    onType();
+    toast('Pushed ✓','ok');
+  }catch(e){toast('Push failed: '+e.message,'err')}
+}
+
+function detectType(text){
+  if(/^https?:\/\//i.test(text.trim()))return'url';
+  if(/[\{\}\[\]<>]|function |def |class |import |const |var |let /.test(text))return'code';
+  return'text';
+}
+
+function onType(){
+  var t=document.getElementById('clipText').value;
+  document.getElementById('charCount').textContent=t.length.toLocaleString();
+  var type=detectType(t);
+  var labels={url:'type: url 🔗',code:'type: code {}',text:'type: text'};
+  document.getElementById('typeDetect').textContent=labels[type]||'type: text';
+}
+
+async function togglePin(id,pinned){
+  try{
+    await fetch(sbUrl+'/rest/v1/clips?id=eq.'+id,{
+      method:'PATCH',
+      headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),
+      body:JSON.stringify({pinned:!pinned})
+    });
+    var c=clips.find(function(x){return x.id===id});
+    if(c){c.pinned=!pinned;updateStats();applyFilter()}
+    toast(pinned?'Unpinned.':'Pinned ✓','ok');
+  }catch(e){toast('Pin failed.','err')}
+}
+
+async function copyClip(text,id,btn){
+  try{
+    await navigator.clipboard.writeText(text);
+    showCopyTip(btn);
+    var c=clips.find(function(x){return x.id===id});
+    if(c){
+      var newCount=(c.copy_count||0)+1;
+      c.copy_count=newCount;
+      try{
+        await fetch(sbUrl+'/rest/v1/clips?id=eq.'+id,{
+          method:'PATCH',
+          headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),
+          body:JSON.stringify({copy_count:newCount})
+        });
+      }catch(e){}
+    }
+  }catch(e){toast('Copy failed.','err')}
+}
+
+function showCopyTip(btn){
+  var wrap=btn.closest?btn.closest('.ibw'):btn.parentElement;
+  if(!wrap)return;
+  var tip=wrap.querySelector('.ctip');
+  if(!tip)return;
+  tip.textContent='Copied!';
+  tip.classList.add('show');
+  btn.classList.add('ok');
+  setTimeout(function(){tip.classList.remove('show');btn.classList.remove('ok')},1600);
+}
+
+function askDelete(id,previewText){
+  pendingDelId=id;
+  document.getElementById('delPreview').textContent=previewText.slice(0,120)+(previewText.length>120?'…':'');
+  document.getElementById('delModal').classList.remove('hidden');
+  document.getElementById('delConfirmBtn').onclick=confirmDelete;
+}
+
+function closeDelModal(){
+  document.getElementById('delModal').classList.add('hidden');
+  pendingDelId=null;
+}
+
+async function confirmDelete(){
+  if(!pendingDelId)return;
+  var id=pendingDelId;
+  closeDelModal();
+  try{
+    await fetch(sbUrl+'/rest/v1/clips?id=eq.'+id,{method:'DELETE',headers:hdr()});
+    clips=clips.filter(function(c){return c.id!==id});
+    updateStats();applyFilter();
+    toast('Clip deleted.','warn');
+  }catch(e){toast('Delete failed.','err')}
+}
+
+function openClearModal(){
+  if(!room||clips.length===0){toast('No clips to clear.','info');return}
+  document.getElementById('clearMsg').textContent='This will permanently delete all '+clips.length+' clips in "'+room+'" from Supabase.';
+  document.getElementById('clearModal').classList.remove('hidden');
+}
+
+async function confirmClearAll(){
+  document.getElementById('clearModal').classList.add('hidden');
+  try{
+    await fetch(sbUrl+'/rest/v1/clips?room=eq.'+encodeURIComponent(room),{method:'DELETE',headers:hdr()});
+    clips=[];updateStats();applyFilter();
+    toast('All clips cleared.','warn');
+  }catch(e){toast('Failed: '+e.message,'err')}
+}
+
+async function pasteSystem(){
+  try{document.getElementById('clipText').value=await navigator.clipboard.readText();onType()}
+  catch(e){toast('Clipboard permission denied.','err')}
+}
+function clearTA(){document.getElementById('clipText').value='';onType()}
+
+function setFilter(btn){
+  document.querySelectorAll('.flt').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  activeFilter=btn.dataset.f;
+  applyFilter();
+}
+
+function applyFilter(newId){
+  var q=document.getElementById('searchInput').value.toLowerCase();
+  var sort=document.getElementById('sortSel').value;
+  var list=clips.slice();
+  if(activeFilter==='pinned')list=list.filter(function(c){return c.pinned});
+  else if(activeFilter==='url')list=list.filter(function(c){return c.type==='url'});
+  else if(activeFilter==='code')list=list.filter(function(c){return c.type==='code'});
+  if(q)list=list.filter(function(c){return c.text.toLowerCase().indexOf(q)>-1||(c.tags||[]).some(function(t){return t.indexOf(q)>-1})});
+  if(sort==='oldest')list.sort(function(a,b){return new Date(a.created_at)-new Date(b.created_at)});
+  else if(sort==='longest')list.sort(function(a,b){return b.text.length-a.text.length});
+  else if(sort==='copied')list.sort(function(a,b){return(b.copy_count||0)-(a.copy_count||0)});
+  else list.sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at)});
+  render(list,newId);
+}
+
+function updateStats(){
+  if(!clips.length){document.getElementById('statsBar').style.display='none';return}
+  document.getElementById('statsBar').style.display='';
+  var total=clips.length;
+  var totalChars=clips.reduce(function(s,c){return s+c.text.length},0);
+  var avg=Math.round(totalChars/total);
+  var devices=[];
+  clips.forEach(function(c){if(c.device&&devices.indexOf(c.device)<0)devices.push(c.device)});
+  var pinned=clips.filter(function(c){return c.pinned}).length;
+  var today=clips.filter(function(c){
+    var d=new Date(c.created_at);var n=new Date();
+    return d.toDateString()===n.toDateString();
+  }).length;
+  var oldest=clips[clips.length-1];
+  document.getElementById('st-total').textContent=total;
+  document.getElementById('st-chars').textContent=totalChars>=1000?(totalChars/1000).toFixed(1)+'k':totalChars;
+  document.getElementById('st-avg').textContent='avg '+avg+'/clip';
+  document.getElementById('st-devices').textContent=devices.length;
+  document.getElementById('st-devlist').textContent=devices.slice(0,2).join(', ')+(devices.length>2?'…':'');
+  document.getElementById('st-pinned').textContent=pinned;
+  document.getElementById('st-today').textContent=today;
+  document.getElementById('st-oldest').textContent=oldest?new Date(oldest.created_at).toLocaleDateString():'';
+}
+
+function render(list,newId){
+  document.getElementById('clipCount').textContent=list.length+(list.length!==clips.length?'/'+clips.length:'');
+  var el=document.getElementById('clipsList');
+  if(!list.length){
+    el.innerHTML='<div class="empty"><div class="empty-icon">☁</div><p>'+(clips.length?'No clips match your filter.':'No clips yet. Push something above!')+'</p></div>';
+    return;
+  }
+  el.innerHTML=list.map(function(c){
+    var dt=c.created_at?new Date(c.created_at).toLocaleString():'just now';
+    var long=c.text.length>180;
+    var isNew=c.id===newId?' new':'';
+    var pinCls=c.pinned?' pinned':'';
+    var typeBadge=c.type==='url'?'<span class="clip-type-badge type-url">link</span>':c.type==='code'?'<span class="clip-type-badge type-code">code</span>':'';
+    var tagHtml=(c.tags||[]).map(function(t){return'<span class="tag">'+esc(t)+'</span>'}).join('');
+    var copyCount=c.copy_count?'<span style="font-size:9px;color:var(--muted);margin-left:4px">copied '+c.copy_count+'x</span>':'';
+    var pinBadge=c.pinned?'<span class="tag" style="background:var(--amber-light);border-color:#e0c98a;color:var(--amber)">📌 pinned</span>':'';
+    return'<div class="clip'+isNew+pinCls+'" id="clip-'+c.id+'">'+
+      '<div class="clip-top">'+
+        '<div class="clip-meta">'+
+          '<div class="clip-time">'+typeBadge+esc(dt)+' · '+esc(c.device||'—')+copyCount+'</div>'+
+          ((tagHtml||c.pinned)?'<div class="clip-tags">'+pinBadge+tagHtml+'</div>':'')+
+        '</div>'+
+        '<div class="clip-btns">'+
+          '<div class="ibw"><button class="icon-btn" title="Copy" onclick="copyClip('+JSON.stringify(c.text)+',"'+c.id+'",this)">⎘</button><div class="ctip"></div><div class="hlabel">Copy</div></div>'+
+          '<div class="ibw"><button class="icon-btn'+(c.pinned?' pinbtn':'')+'" onclick="togglePin(\''+c.id+'\','+c.pinned+')">'+(c.pinned?'📌':'·')+'</button><div class="hlabel">'+(c.pinned?'Unpin':'Pin')+'</div></div>'+
+          '<div class="ibw"><button class="icon-btn" onclick="openDrawer(\''+c.id+'\')" style="font-size:11px">ℹ</button><div class="hlabel">Details</div></div>'+
+          '<div class="ibw"><button class="icon-btn del" onclick="askDelete(\''+c.id+'\','+JSON.stringify(c.text)+')">✕</button><div class="hlabel">Delete</div></div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="clip-body'+(long?'':' open')+'" id="cb-'+c.id+'">'+esc(c.text)+'</div>'+
+      (long?'<button class="expand-btn" onclick="toggleExpand(\''+c.id+'\',this)">▼ more</button>':'')+
+    '</div>';
+  }).join('');
+}
+
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+
+function toggleExpand(id,btn){
+  var el=document.getElementById('cb-'+id);
+  var open=el.classList.toggle('open');
+  btn.textContent=open?'▲ less':'▼ more';
+}
+
+function openDrawer(id){
+  var c=clips.find(function(x){return x.id===id});
+  if(!c)return;
+  var dt=c.created_at?new Date(c.created_at):null;
+  var age=dt?Math.round((Date.now()-dt)/60000):0;
+  var ageStr=age<60?age+'m ago':age<1440?Math.round(age/60)+'h ago':Math.round(age/1440)+'d ago';
+  var words=c.text.split(/\s+/).filter(Boolean).length;
+  var lines=c.text.split('\n').length;
+  document.getElementById('drawerContent').innerHTML=
+    '<div class="d-section"><div class="d-label">Content</div><div class="d-val">'+esc(c.text)+'</div></div>'+
+    '<div class="d-section"><div class="d-label">Metadata</div><div class="d-row">'+
+      '<span class="d-pill green">'+(c.type||'text')+'</span>'+
+      (c.pinned?'<span class="d-pill" style="background:var(--amber-light);color:var(--amber);border-color:#e0c98a">📌 pinned</span>':'')+
+      '<span class="d-pill">copied '+(c.copy_count||0)+'×</span>'+
+    '</div></div>'+
+    '<div class="d-section"><div class="d-label">Statistics</div><div class="d-row">'+
+      '<span class="d-pill">'+c.text.length.toLocaleString()+' chars</span>'+
+      '<span class="d-pill">'+words+' words</span>'+
+      '<span class="d-pill">'+lines+' line'+(lines!==1?'s':'')+'</span>'+
+    '</div></div>'+
+    '<div class="d-section"><div class="d-label">Origin</div><div class="d-row">'+
+      '<span class="d-pill">💻 '+esc(c.device||'unknown')+'</span>'+
+      '<span class="d-pill">🏠 '+esc(c.room||room)+'</span>'+
+    '</div><div style="font-size:11px;color:var(--muted);margin-top:6px">'+
+      (dt?dt.toLocaleString():'')+' &nbsp;('+ageStr+')'+
+    '</div></div>'+
+    ((c.tags||[]).length?'<div class="d-section"><div class="d-label">Tags</div><div class="d-row">'+c.tags.map(function(t){return'<span class="d-pill">'+esc(t)+'</span>'}).join('')+'</div></div>':'')+
+    '<div class="d-section"><div class="d-label">Supabase record ID</div><div style="font-size:10px;color:var(--muted);font-family:inherit;word-break:break-all">'+c.id+'</div></div>'+
+    '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">'+
+      '<button class="btn btn-ghost btn-sm" onclick="copyClip('+JSON.stringify(c.text)+',"'+c.id+'",this)">Copy text</button>'+
+      '<button class="btn btn-ghost btn-sm" onclick="togglePin(\''+c.id+'\','+c.pinned+')">'+(c.pinned?'Unpin':'Pin')+'</button>'+
+      '<button class="btn btn-danger btn-sm" onclick="closeDrawer(null);askDelete(\''+c.id+'\','+JSON.stringify(c.text)+')">Delete</button>'+
+    '</div>';
+  document.getElementById('drawerBg').classList.remove('hidden');
+}
+
+function closeDrawer(e){
+  if(e&&e.target!==document.getElementById('drawerBg'))return;
+  document.getElementById('drawerBg').classList.add('hidden');
+}
+
+function setStatus(type,txt){
+  document.getElementById('dot').className='dot '+type;
+  document.getElementById('statusTxt').textContent=txt;
+}
+
+function toast(msg,type){
+  type=type||'info';
+  var el=document.createElement('div');
+  el.className='toast '+type;
+  el.textContent=msg;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(function(){el.remove()},2800);
+}
+
+document.getElementById('delModal').addEventListener('click',function(e){if(e.target===this)closeDelModal()});
+document.getElementById('clearModal').addEventListener('click',function(e){if(e.target===this)document.getElementById('clearModal').classList.add('hidden')});
+
+loadSaved();
+
+var sc=document.createElement('script');
+sc.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+sc.onload=function(){if(sbUrl&&sbKey)sbClient=window.supabase.createClient(sbUrl,sbKey)};
+document.head.appendChild(sc);
+</script>
+</body>
+</html>
