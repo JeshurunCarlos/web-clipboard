@@ -7,39 +7,61 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500&family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,300&display=swap" rel="stylesheet">
 <style>
-:root{--bg:#f5f2ee;--surface:#faf8f5;--surface2:#edeae5;--border:#ddd9d3;--text:#2c2926;--muted:#9a948c;--accent:#5c7a6e;--accent-light:#e8f0ed;--red:#c0544a;--red-light:#fdf0ef;--amber:#b07d2e;--amber-light:#fdf3e3;--blue:#3a6b9e;--blue-light:#e8f0f8;--radius:10px}
+:root{
+  --bg:#f5f2ee;--surface:#faf8f5;--surface2:#edeae5;--border:#ddd9d3;
+  --text:#2c2926;--muted:#9a948c;--accent:#5c7a6e;--accent-light:#e8f0ed;
+  --red:#c0544a;--red-light:#fdf0ef;--amber:#b07d2e;--amber-light:#fdf3e3;
+  --blue:#3a6b9e;--blue-light:#e8f0f8;--radius:10px;
+}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'IBM Plex Mono',monospace;background:var(--bg);color:var(--text);min-height:100vh;font-size:13.5px}
 body::before{content:'';position:fixed;inset:0;background-image:repeating-linear-gradient(0deg,transparent,transparent 24px,rgba(0,0,0,.018) 24px,rgba(0,0,0,.018) 25px);pointer-events:none;z-index:0}
 .wrap{position:relative;z-index:1;max-width:740px;margin:0 auto;padding:40px 24px 80px}
-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;animation:up .5s ease both}
+
+/* ── Header ── */
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;animation:up .5s ease both}
 .brand{display:flex;align-items:baseline;gap:10px}
 .brand-name{font-family:'Fraunces',serif;font-size:26px;font-weight:500;letter-spacing:-.5px}
 .brand-name em{font-style:italic;color:var(--accent)}
 .brand-tag{font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
-.header-right{display:flex;align-items:center;gap:12px}
+.header-right{display:flex;align-items:center;gap:10px}
 .status-row{display:flex;align-items:center;gap:7px}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--border);transition:background .4s}
-.dot.ok{background:var(--accent)}.dot.err{background:var(--red)}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--border);transition:background .4s;flex-shrink:0}
+.dot.ok{background:var(--accent)}.dot.err{background:var(--red)}.dot.warn{background:var(--amber)}
 .status-txt{font-size:11px;color:var(--muted)}
-/* stats */
-.stats-bar{display:flex;gap:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:14px;animation:up .5s .04s ease both}
+
+/* ── Lock screen ── */
+.lock-screen{position:fixed;inset:0;background:var(--bg);z-index:500;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;padding:24px}
+.lock-screen.hidden{display:none}
+.lock-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:36px 32px;max-width:360px;width:100%;text-align:center}
+.lock-icon{font-size:32px;margin-bottom:14px}
+.lock-box h2{font-family:'Fraunces',serif;font-size:22px;font-weight:300;margin-bottom:6px}
+.lock-box p{font-size:11px;color:var(--muted);margin-bottom:20px;line-height:1.6}
+.lock-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:11px 14px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:14px;outline:none;text-align:center;letter-spacing:3px;transition:border-color .2s;margin-bottom:12px}
+.lock-input:focus{border-color:var(--accent)}
+.lock-err{font-size:11px;color:var(--red);min-height:16px;margin-bottom:8px}
+
+/* ── Stats bar ── */
+.stats-bar{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:14px;animation:up .5s .04s ease both}
 .stat{flex:1;padding:11px 14px;border-right:1px solid var(--border)}
 .stat:last-child{border-right:none}
 .stat-val{font-family:'Fraunces',serif;font-size:20px;font-weight:300;color:var(--text);line-height:1}
 .stat-lbl{font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-top:3px}
 .stat-sub{font-size:9px;color:var(--muted);margin-top:2px}
-/* card */
+
+/* ── Cards ── */
 .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px 24px;margin-bottom:14px}
 .card-label{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
-/* fields */
+
+/* ── Fields ── */
 .fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
 @media(max-width:540px){.fields-grid{grid-template-columns:1fr}}
 .field label{display:block;font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:4px}
-.field input,.room-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none;transition:border-color .2s,box-shadow .2s}
-.field input:focus,.room-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(92,122,110,.1)}
-.field input::placeholder,.room-input::placeholder{color:var(--muted);opacity:.5}
-/* buttons */
+.field input,.room-input,.tag-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:9px 12px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:12.5px;outline:none;transition:border-color .2s,box-shadow .2s}
+.field input:focus,.room-input:focus,.tag-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(92,122,110,.1)}
+.field input::placeholder,.room-input::placeholder,.tag-input::placeholder{color:var(--muted);opacity:.5}
+
+/* ── Buttons ── */
 .btn-row{display:flex;gap:10px;flex-wrap:wrap}
 .btn{padding:9px 16px;border-radius:8px;border:1px solid transparent;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;transition:all .16s;white-space:nowrap}
 .btn:active{transform:scale(.97)}
@@ -47,20 +69,29 @@ header{display:flex;align-items:center;justify-content:space-between;margin-bott
 .btn-ghost{background:transparent;color:var(--muted);border-color:var(--border)}.btn-ghost:hover{color:var(--text);border-color:#b0aca5}
 .btn-danger{background:transparent;color:var(--red);border-color:#e0b8b5}.btn-danger:hover{background:var(--red-light)}
 .btn-sm{padding:6px 11px;font-size:11px}
-/* hint */
-.hint{margin-top:12px;font-size:11px;color:var(--muted);line-height:1.75}
-.hint a{color:var(--accent);text-decoration:none}.hint a:hover{text-decoration:underline}
-.sql{margin-top:8px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 13px;font-size:11px;line-height:1.9;color:var(--text);white-space:pre;overflow-x:auto}
-/* room */
+.btn-icon{width:32px;height:32px;padding:0;border-radius:8px;display:grid;place-items:center;font-size:15px}
+
+/* ── Room section ── */
 .room-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .room-row .room-input{flex:1;min-width:160px;font-size:13px}
 .room-active{font-size:11px;color:var(--muted);margin-top:8px}
 .room-active span{color:var(--accent)}
-/* compose */
+
+/* ── Room list ── */
+.room-list{margin-top:12px}
+.room-list-label{font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.room-chips{display:flex;flex-wrap:wrap;gap:6px}
+.room-chip{padding:5px 12px;border-radius:100px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);font-size:11px;cursor:pointer;font-family:'IBM Plex Mono',monospace;transition:all .15s;display:flex;align-items:center;gap:6px}
+.room-chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
+.room-chip.active-room{border-color:var(--accent);color:var(--accent);background:var(--accent-light)}
+.room-chip-dot{width:5px;height:5px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.room-chip-count{font-size:9px;opacity:.7}
+.room-empty{font-size:11px;color:var(--muted);font-style:italic}
+.room-loading{font-size:11px;color:var(--muted)}
+
+/* ── Compose ── */
 .compose-top{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap;align-items:center}
-.tag-input{flex:1;min-width:140px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:7px 11px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:12px;outline:none;transition:border-color .2s}
-.tag-input:focus{border-color:var(--accent)}
-.tag-input::placeholder{color:var(--muted);opacity:.5}
+.tag-input{flex:1;min-width:140px;font-size:12px}
 .ta-wrap{position:relative}
 textarea{width:100%;min-height:120px;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;resize:vertical;outline:none;transition:border-color .2s}
 textarea:focus{border-color:var(--accent)}
@@ -68,7 +99,8 @@ textarea::placeholder{color:var(--muted);opacity:.5}
 .char{position:absolute;bottom:10px;right:12px;font-size:10px;color:var(--muted);pointer-events:none}
 .compose-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
 .type-detect{font-size:10px;color:var(--muted);margin-left:auto;padding:4px 8px;background:var(--surface2);border-radius:5px;border:1px solid var(--border)}
-/* toolbar */
+
+/* ── Toolbar ── */
 .toolbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center;animation:up .5s .18s ease both}
 .search-wrap{position:relative;flex:1;min-width:160px}
 .search-wrap input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 12px 8px 30px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:12px;outline:none;transition:border-color .2s}
@@ -80,12 +112,12 @@ textarea::placeholder{color:var(--muted);opacity:.5}
 .flt:hover{color:var(--text);border-color:var(--accent)}
 .flt.active{background:var(--accent-light);color:var(--accent);border-color:var(--accent)}
 .sort-sel{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:6px 9px;color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:11px;outline:none;cursor:pointer}
-/* clips header */
+
+/* ── Clips ── */
 .clips-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;animation:up .5s .2s ease both}
 .clips-title{font-family:'Fraunces',serif;font-size:18px;font-weight:300}
 .count{font-size:11px;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:100px;padding:3px 10px}
 hr{border:none;border-top:1px solid var(--border);margin-bottom:14px}
-/* clip */
 .clip{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 17px;margin-bottom:10px;transition:border-color .2s;animation:up .3s ease both;position:relative}
 .clip:hover{border-color:#c5c0b8}
 .clip.pinned{border-left:3px solid var(--amber)}
@@ -98,46 +130,89 @@ hr{border:none;border-top:1px solid var(--border);margin-bottom:14px}
 .type-url{background:var(--blue-light);color:var(--blue);border:1px solid #c5d8ee}
 .type-code{background:#f0f0f8;color:#5a4f8a;border:1px solid #d8d4ee}
 .clip-btns{display:flex;gap:5px;flex-shrink:0}
-/* icon btn + copy tooltip */
 .ibw{position:relative;display:inline-block}
 .icon-btn{width:28px;height:28px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;display:grid;place-items:center;font-size:12px;transition:all .16s;font-family:inherit}
 .icon-btn:hover{color:var(--text);border-color:var(--accent);background:var(--accent-light)}
 .icon-btn.ok{color:var(--accent);border-color:var(--accent);background:var(--accent-light)}
 .icon-btn.pinbtn{color:var(--amber);border-color:var(--amber);background:var(--amber-light)}
 .icon-btn.del:hover{color:var(--red);border-color:#dba8a4;background:var(--red-light)}
-/* floating copy tooltip */
-.ctip{position:absolute;top:50%;right:calc(100% + 8px);transform:translateY(-50%);background:var(--accent);color:#fff;font-size:10px;padding:4px 9px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .18s;font-family:'IBM Plex Mono',monospace;z-index:60}
+/* copy tooltip */
+.ctip{position:absolute;top:50%;right:calc(100% + 8px);transform:translateY(-50%);background:var(--accent);color:#fff;font-size:10px;padding:4px 9px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .15s;font-family:'IBM Plex Mono',monospace;z-index:60}
 .ctip::after{content:'';position:absolute;left:100%;top:50%;transform:translateY(-50%);border:5px solid transparent;border-left-color:var(--accent)}
 .ctip.show{opacity:1}
-/* hover label */
-.hlabel{position:absolute;top:50%;right:calc(100% + 8px);transform:translateY(-50%);background:var(--text);color:#fff;font-size:10px;padding:3px 8px;border-radius:5px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .12s .25s;font-family:'IBM Plex Mono',monospace;z-index:60}
+.hlabel{position:absolute;top:50%;right:calc(100% + 8px);transform:translateY(-50%);background:var(--text);color:#fff;font-size:10px;padding:3px 8px;border-radius:5px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .1s .2s;font-family:'IBM Plex Mono',monospace;z-index:60}
 .hlabel::after{content:'';position:absolute;left:100%;top:50%;transform:translateY(-50%);border:4px solid transparent;border-left-color:var(--text)}
 .ibw:hover .hlabel{opacity:1}
-/* clip body */
 .clip-body{font-size:12.5px;line-height:1.7;color:#5a5450;white-space:pre-wrap;word-break:break-word;max-height:90px;overflow:hidden;transition:max-height .3s ease}
 .clip-body.open{max-height:600px}
 .expand-btn{margin-top:4px;font-size:11px;color:var(--accent);cursor:pointer;background:none;border:none;font-family:inherit;padding:0}
 .expand-btn:hover{text-decoration:underline}
-/* empty */
+
+/* ── Empty ── */
 .empty{text-align:center;padding:44px 20px;color:var(--muted)}
 .empty-icon{font-size:28px;margin-bottom:10px;opacity:.4}
 .empty p{font-size:12px;line-height:1.8}
-/* toasts */
+
+/* ── Toasts ── */
 .toasts{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:7px}
 .toast{padding:9px 16px;border-radius:8px;font-size:12px;border:1px solid;animation:slide-in .22s ease both;max-width:280px}
 .toast.ok{background:#eef4f1;border-color:#b8d4c8;color:var(--accent)}
 .toast.err{background:var(--red-light);border-color:#e8b4b0;color:var(--red)}
 .toast.info{background:var(--surface);border-color:var(--border);color:var(--muted)}
 .toast.warn{background:var(--amber-light);border-color:#e0c98a;color:var(--amber)}
-/* modals */
-.modal-bg{position:fixed;inset:0;background:rgba(44,41,38,.38);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px;animation:fade-in .18s ease both}
+
+/* ── Settings popup ── */
+.settings-overlay{position:fixed;inset:0;background:rgba(44,41,38,.4);z-index:400;display:flex;align-items:center;justify-content:center;padding:20px;animation:fade-in .18s ease both}
+.settings-overlay.hidden{display:none}
+.settings-panel{background:var(--surface);border:1px solid var(--border);border-radius:16px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 12px 48px rgba(0,0,0,.12);animation:pop-in .2s ease both}
+.settings-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 0}
+.settings-header h2{font-family:'Fraunces',serif;font-size:20px;font-weight:300}
+.settings-close{width:30px;height:30px;border-radius:7px;border:1px solid var(--border);background:var(--surface2);color:var(--muted);cursor:pointer;display:grid;place-items:center;font-size:14px;font-family:inherit;transition:all .15s}
+.settings-close:hover{color:var(--text);border-color:var(--accent)}
+.settings-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin:16px 24px 0;overflow-x:auto}
+.stab{padding:8px 14px;font-size:11px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;font-family:'IBM Plex Mono',monospace;background:none;border-top:none;border-left:none;border-right:none;transition:all .15s;margin-bottom:-1px}
+.stab:hover{color:var(--text)}
+.stab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.settings-body{padding:20px 24px 24px}
+.s-section{margin-bottom:22px}
+.s-section:last-child{margin-bottom:0}
+.s-label{font-size:10px;text-transform:uppercase;letter-spacing:1.8px;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.s-row{display:flex;align-items:center;justify-content:space-between;padding:10px 14px;background:var(--bg);border:1px solid var(--border);border-radius:8px;margin-bottom:7px}
+.s-row-label{font-size:12px;color:var(--text)}
+.s-row-sub{font-size:10px;color:var(--muted);margin-top:2px}
+/* toggle switch */
+.toggle{position:relative;width:36px;height:20px;flex-shrink:0}
+.toggle input{opacity:0;width:0;height:0;position:absolute}
+.toggle-track{position:absolute;inset:0;background:var(--border);border-radius:10px;transition:background .2s;cursor:pointer}
+.toggle input:checked+.toggle-track{background:var(--accent)}
+.toggle-thumb{position:absolute;top:3px;left:3px;width:14px;height:14px;background:#fff;border-radius:50%;transition:transform .2s;pointer-events:none}
+.toggle input:checked~.toggle-thumb{transform:translateX(16px)}
+/* settings input */
+.s-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:8px 12px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:12px;outline:none;transition:border-color .2s}
+.s-input:focus{border-color:var(--accent)}
+.s-input::placeholder{color:var(--muted);opacity:.5}
+.s-badge{font-size:9px;padding:2px 8px;border-radius:100px;background:var(--accent-light);color:var(--accent);border:1px solid #b8d4c8}
+.s-badge.red{background:var(--red-light);color:var(--red);border-color:#e8b4b0}
+.sql-block{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;font-size:11px;line-height:1.9;color:var(--text);white-space:pre;overflow-x:auto;margin-top:8px;font-family:'IBM Plex Mono',monospace}
+.s-hint{font-size:11px;color:var(--muted);line-height:1.65;margin-top:6px}
+.s-hint a{color:var(--accent);text-decoration:none}
+.s-hint a:hover{text-decoration:underline}
+.conn-row{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.conn-badge{font-size:11px;padding:4px 12px;border-radius:100px;border:1px solid}
+.conn-badge.ok{background:var(--accent-light);border-color:#b8d4c8;color:var(--accent)}
+.conn-badge.err{background:var(--red-light);border-color:#e8b4b0;color:var(--red)}
+.conn-badge.idle{background:var(--surface2);border-color:var(--border);color:var(--muted)}
+
+/* ── Modals ── */
+.modal-bg{position:fixed;inset:0;background:rgba(44,41,38,.38);z-index:410;display:flex;align-items:center;justify-content:center;padding:20px;animation:fade-in .18s ease both}
 .modal-bg.hidden{display:none}
 .modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;max-width:360px;width:100%;box-shadow:0 8px 32px rgba(0,0,0,.1);animation:pop-in .2s ease both}
 .modal h3{font-family:'Fraunces',serif;font-size:18px;font-weight:300;margin-bottom:8px}
 .modal-preview{font-size:11px;color:var(--muted);background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:9px 11px;margin-bottom:12px;max-height:72px;overflow:hidden;white-space:pre-wrap;word-break:break-word;line-height:1.5}
 .modal p{font-size:12px;color:var(--muted);line-height:1.6;margin-bottom:16px}
 .modal-btns{display:flex;gap:10px;justify-content:flex-end}
-/* drawer */
+
+/* ── Detail drawer ── */
 .drawer-bg{position:fixed;inset:0;background:rgba(44,41,38,.28);z-index:300;animation:fade-in .2s ease both}
 .drawer-bg.hidden{display:none}
 .drawer{position:fixed;right:0;top:0;bottom:0;width:min(420px,95vw);background:var(--surface);border-left:1px solid var(--border);padding:26px 22px;overflow-y:auto;animation:slide-right .24s ease both;z-index:301}
@@ -150,7 +225,13 @@ hr{border:none;border-top:1px solid var(--border);margin-bottom:14px}
 .d-row{display:flex;gap:7px;flex-wrap:wrap}
 .d-pill{font-size:11px;padding:3px 10px;border-radius:100px;background:var(--surface2);border:1px solid var(--border);color:var(--muted)}
 .d-pill.green{background:var(--accent-light);border-color:#b8d4c8;color:var(--accent)}
-/* keyframes */
+
+/* ── Copy fallback banner ── */
+.copy-fallback{display:none;background:var(--blue-light);border:1px solid #c5d8ee;border-radius:8px;padding:10px 14px;margin-bottom:14px;font-size:11px;color:var(--blue);line-height:1.6}
+.copy-fallback.show{display:block}
+.copy-fallback strong{display:block;margin-bottom:3px;font-size:12px}
+
+/* ── Animations ── */
 @keyframes up{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slide-in{from{opacity:0;transform:translateX(10px)}to{opacity:1;transform:translateX(0)}}
 @keyframes pop-in{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
@@ -164,12 +245,162 @@ hr{border:none;border-top:1px solid var(--border);margin-bottom:14px}
 
 <div class="toasts" id="toasts"></div>
 
-<!-- Delete confirm modal -->
+<!-- ══ LOCK SCREEN ══════════════════════════════════ -->
+<div class="lock-screen hidden" id="lockScreen">
+  <div class="lock-box">
+    <div class="lock-icon">🔒</div>
+    <h2>Room locked</h2>
+    <p>This room is password-protected.<br>Enter the password to access its clips.</p>
+    <input class="lock-input" id="lockInput" type="password" placeholder="••••••••"
+      onkeydown="if(event.key==='Enter')submitLock()"/>
+    <div class="lock-err" id="lockErr"></div>
+    <button class="btn btn-primary" style="width:100%" onclick="submitLock()">Unlock</button>
+    <button class="btn btn-ghost btn-sm" style="margin-top:8px;width:100%" onclick="hideLock()">Cancel</button>
+  </div>
+</div>
+
+<!-- ══ SETTINGS POPUP ═══════════════════════════════ -->
+<div class="settings-overlay hidden" id="settingsOverlay" onclick="closeSettingsOutside(event)">
+  <div class="settings-panel" id="settingsPanel">
+    <div class="settings-header">
+      <h2>Settings</h2>
+      <button class="settings-close" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="settings-tabs">
+      <button class="stab active" onclick="switchTab(this,'tab-connection')">Connection</button>
+      <button class="stab" onclick="switchTab(this,'tab-security')">Security</button>
+      <button class="stab" onclick="switchTab(this,'tab-display')">Display</button>
+      <button class="stab" onclick="switchTab(this,'tab-setup')">SQL Setup</button>
+    </div>
+
+    <!-- Connection tab -->
+    <div class="settings-body" id="tab-connection">
+      <div class="s-section">
+        <div class="s-label">Supabase credentials</div>
+        <div style="margin-bottom:8px">
+          <div class="field" style="margin-bottom:8px"><label>Project URL</label><input class="s-input" id="s-sbUrl" placeholder="https://xxxx.supabase.co"/></div>
+          <div class="field"><label>Anon / Public Key</label><input class="s-input" id="s-sbKey" placeholder="eyJhbGci..."/></div>
+        </div>
+        <div class="conn-row">
+          <span class="conn-badge idle" id="connBadge">not connected</span>
+          <button class="btn btn-primary btn-sm" onclick="connectFromSettings()">Connect</button>
+          <button class="btn btn-ghost btn-sm" onclick="disconnectSupabase()">Disconnect</button>
+        </div>
+        <div class="s-hint">Get these from <a href="https://supabase.com/dashboard" target="_blank">supabase.com/dashboard</a> → Settings → API</div>
+      </div>
+      <div class="s-section">
+        <div class="s-label">Realtime</div>
+        <div class="s-row">
+          <div><div class="s-row-label">Live sync</div><div class="s-row-sub">Auto-refresh when clips change</div></div>
+          <label class="toggle"><input type="checkbox" id="tog-realtime" checked onchange="saveDisplayPrefs()"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Security tab -->
+    <div class="settings-body hidden" id="tab-security">
+      <div class="s-section">
+        <div class="s-label">Room password <span class="s-badge" id="pwdBadge">off</span></div>
+        <div class="s-row" style="margin-bottom:8px">
+          <div><div class="s-row-label">Protect room with password</div><div class="s-row-sub">Password is hashed locally and checked on join</div></div>
+          <label class="toggle"><input type="checkbox" id="tog-roomPwd" onchange="togglePwdSection()"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+        </div>
+        <div id="pwdSection" style="display:none;margin-bottom:8px">
+          <div class="field" style="margin-bottom:8px"><label>Set room password</label><input class="s-input" id="s-roomPwd" type="password" placeholder="choose a password"/></div>
+          <button class="btn btn-primary btn-sm" onclick="saveRoomPassword()">Save password</button>
+          <button class="btn btn-ghost btn-sm" onclick="clearRoomPassword()">Clear password</button>
+        </div>
+        <div class="s-hint">Password is stored as a SHA-256 hash in localStorage — it never leaves your device.</div>
+      </div>
+      <div class="s-section">
+        <div class="s-label">Auto-lock</div>
+        <div class="s-row">
+          <div><div class="s-row-label">Lock after inactivity</div><div class="s-row-sub">Requires password to re-enter room</div></div>
+          <label class="toggle"><input type="checkbox" id="tog-autolock" onchange="saveDisplayPrefs()"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+        </div>
+        <div class="s-row">
+          <div><div class="s-row-label">Mask clip content</div><div class="s-row-sub">Blur text until you hover over a clip</div></div>
+          <label class="toggle"><input type="checkbox" id="tog-mask" onchange="applyMask()"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+        </div>
+      </div>
+      <div class="s-section">
+        <div class="s-label">Data</div>
+        <div class="s-row" style="flex-direction:column;align-items:flex-start;gap:8px">
+          <div><div class="s-row-label">Clear local settings</div><div class="s-row-sub">Removes saved URL, key, and passwords from this device</div></div>
+          <button class="btn btn-danger btn-sm" onclick="clearLocalData()">Clear local data</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Display tab -->
+    <div class="settings-body hidden" id="tab-display">
+      <div class="s-section">
+        <div class="s-label">Appearance</div>
+        <div class="s-row">
+          <div><div class="s-row-label">Show stats bar</div><div class="s-row-sub">Clips count, chars, devices</div></div>
+          <label class="toggle"><input type="checkbox" id="tog-stats" checked onchange="saveDisplayPrefs()"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+        </div>
+        <div class="s-row">
+          <div><div class="s-row-label">Compact mode</div><div class="s-row-sub">Smaller clip cards</div></div>
+          <label class="toggle"><input type="checkbox" id="tog-compact" onchange="applyCompact()"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+        </div>
+        <div class="s-row">
+          <div><div class="s-row-label">Show device name</div><div class="s-row-sub">Display which device pushed each clip</div></div>
+          <label class="toggle"><input type="checkbox" id="tog-device" checked onchange="saveDisplayPrefs()"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+        </div>
+      </div>
+      <div class="s-section">
+        <div class="s-label">Device name</div>
+        <div style="display:flex;gap:8px">
+          <input class="s-input" id="s-deviceName" placeholder="My MacBook" style="flex:1"/>
+          <button class="btn btn-primary btn-sm" onclick="saveDeviceName()">Save</button>
+        </div>
+        <div class="s-hint" style="margin-top:6px">Shown on clips you push. Defaults to browser platform.</div>
+      </div>
+    </div>
+
+    <!-- SQL Setup tab -->
+    <div class="settings-body hidden" id="tab-setup">
+      <div class="s-section">
+        <div class="s-label">First-time setup</div>
+        <div class="s-hint">Run this SQL once in your Supabase project → SQL Editor:</div>
+        <div class="sql-block">create table clips (
+  id uuid default gen_random_uuid() primary key,
+  room text not null,
+  text text not null,
+  device text,
+  tags text[] default '{}',
+  pinned boolean default false,
+  type text default 'text',
+  copy_count integer default 0,
+  created_at timestamptz default now()
+);
+alter table clips enable row level security;
+create policy "open" on clips
+  for all using (true) with check (true);</div>
+      </div>
+      <div class="s-section">
+        <div class="s-label">Hosting — for clipboard to work</div>
+        <div class="s-hint">The copy button requires HTTPS. Free options:<br>
+          · <a href="https://app.netlify.com/drop" target="_blank">Netlify Drop</a> — drag this file, done in 30 sec<br>
+          · <a href="https://pages.github.com" target="_blank">GitHub Pages</a> — rename to index.html, push to repo<br>
+          · Run locally: <code style="background:var(--surface2);padding:1px 5px;border-radius:4px">python3 -m http.server 8080</code>
+        </div>
+      </div>
+      <div class="s-section">
+        <div class="s-label">About</div>
+        <div class="s-hint">CloudClip v2.0 · Built with Supabase Realtime<br>All data stored in your own Supabase project.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DELETE CONFIRM ═══════════════════════════════ -->
 <div class="modal-bg hidden" id="delModal">
   <div class="modal">
     <h3>Delete this clip?</h3>
     <div class="modal-preview" id="delPreview"></div>
-    <p>This removes the clip from Supabase permanently across all devices.</p>
+    <p>Removed permanently from Supabase across all devices.</p>
     <div class="modal-btns">
       <button class="btn btn-ghost btn-sm" onclick="closeDelModal()">Cancel</button>
       <button class="btn btn-danger btn-sm" id="delConfirmBtn">Delete</button>
@@ -177,11 +408,11 @@ hr{border:none;border-top:1px solid var(--border);margin-bottom:14px}
   </div>
 </div>
 
-<!-- Clear all modal -->
+<!-- ══ CLEAR ALL CONFIRM ════════════════════════════ -->
 <div class="modal-bg hidden" id="clearModal">
   <div class="modal">
     <h3>Clear all clips?</h3>
-    <p id="clearMsg">This will permanently delete all clips in this room.</p>
+    <p id="clearMsg">Permanently deletes all clips in this room.</p>
     <div class="modal-btns">
       <button class="btn btn-ghost btn-sm" onclick="document.getElementById('clearModal').classList.add('hidden')">Cancel</button>
       <button class="btn btn-danger btn-sm" onclick="confirmClearAll()">Delete all</button>
@@ -189,7 +420,7 @@ hr{border:none;border-top:1px solid var(--border);margin-bottom:14px}
   </div>
 </div>
 
-<!-- Detail drawer -->
+<!-- ══ DETAIL DRAWER ════════════════════════════════ -->
 <div class="drawer-bg hidden" id="drawerBg" onclick="closeDrawer(event)">
   <div class="drawer" id="drawer">
     <button class="drawer-close" onclick="closeDrawer(null)">✕</button>
@@ -198,6 +429,7 @@ hr{border:none;border-top:1px solid var(--border);margin-bottom:14px}
   </div>
 </div>
 
+<!-- ══ MAIN APP ══════════════════════════════════════ -->
 <div class="wrap">
 
   <header>
@@ -210,13 +442,17 @@ hr{border:none;border-top:1px solid var(--border);margin-bottom:14px}
         <div class="dot" id="dot"></div>
         <span class="status-txt" id="statusTxt">not connected</span>
       </div>
-      <div style="display:none" id="showSetupWrap">
-        <button class="btn btn-ghost btn-sm" onclick="toggleSetup()">⚙ Settings</button>
-      </div>
+      <button class="btn btn-ghost btn-icon" onclick="openSettings()" title="Settings">⚙</button>
     </div>
   </header>
 
-  <!-- Stats -->
+  <!-- Copy fallback notice (shown on non-HTTPS) -->
+  <div class="copy-fallback" id="copyFallback">
+    <strong>⚠ Copy may not work on this URL</strong>
+    The clipboard API requires HTTPS. Host this file on Netlify, GitHub Pages, or run <code>python3 -m http.server 8080</code> locally. See <b>Settings → SQL Setup</b> for details.
+  </div>
+
+  <!-- Stats bar -->
   <div class="stats-bar" id="statsBar" style="display:none">
     <div class="stat"><div class="stat-val" id="st-total">0</div><div class="stat-lbl">Clips</div></div>
     <div class="stat"><div class="stat-val" id="st-chars">0</div><div class="stat-lbl">Chars</div><div class="stat-sub" id="st-avg"></div></div>
@@ -225,46 +461,26 @@ hr{border:none;border-top:1px solid var(--border);margin-bottom:14px}
     <div class="stat"><div class="stat-val" id="st-today">0</div><div class="stat-lbl">Today</div><div class="stat-sub" id="st-oldest"></div></div>
   </div>
 
-  <!-- Setup -->
-  <div class="card" id="setupCard" style="animation:up .5s ease both">
-    <div class="card-label">Supabase setup</div>
-    <div class="fields-grid">
-      <div class="field"><label>Project URL</label><input id="sbUrl" placeholder="https://xxxx.supabase.co"/></div>
-      <div class="field"><label>Anon / Public Key</label><input id="sbKey" placeholder="eyJhbGci..."/></div>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-primary" onclick="connect()">Connect</button>
-      <button class="btn btn-ghost" onclick="toggleSetup()">Hide</button>
-    </div>
-    <div class="hint">
-      Get these from <a href="https://supabase.com/dashboard" target="_blank">supabase.com/dashboard</a> → Settings → API.
-      Run this SQL once in the Supabase SQL editor:
-      <div class="sql">create table clips (
-  id uuid default gen_random_uuid() primary key,
-  room text not null,
-  text text not null,
-  device text,
-  tags text[] default '{}',
-  pinned boolean default false,
-  type text default 'text',
-  copy_count integer default 0,
-  created_at timestamptz default now()
-);
-alter table clips enable row level security;
-create policy "open" on clips for all using (true) with check (true);</div>
-    </div>
-  </div>
-
-  <!-- Room -->
+  <!-- Room card -->
   <div class="card" style="animation:up .5s .08s ease both">
     <div class="card-label">Room</div>
     <div class="room-row">
-      <input class="room-input" id="roomInput" placeholder="name your room (e.g. macbook-home)" maxlength="40" onkeydown="if(event.key==='Enter')joinRoom()"/>
+      <input class="room-input" id="roomInput" placeholder="name your room (e.g. macbook-home)" maxlength="40" onkeydown="if(event.key==='Enter')joinRoom()" oninput="filterRoomChips()"/>
       <button class="btn btn-primary" onclick="joinRoom()">Join</button>
       <button class="btn btn-ghost" onclick="randRoom()" title="Random">🎲</button>
     </div>
     <div class="room-active" id="roomLabel" style="display:none">
       Active: <span id="roomName">—</span> &nbsp;·&nbsp; <span id="rtStatus" style="color:var(--muted)">realtime off</span>
+    </div>
+    <!-- Available rooms list -->
+    <div class="room-list" id="roomList">
+      <div class="room-list-label">
+        <span>Available rooms</span>
+        <button class="btn btn-ghost btn-sm" onclick="loadAvailableRooms()" style="padding:3px 9px;font-size:10px">↻</button>
+      </div>
+      <div class="room-chips" id="roomChips">
+        <span class="room-loading">Connect to Supabase to see rooms.</span>
+      </div>
     </div>
   </div>
 
@@ -274,7 +490,7 @@ create policy "open" on clips for all using (true) with check (true);</div>
     <div class="compose-top">
       <input class="tag-input" id="tagInput" placeholder="tags, comma separated (optional)"/>
       <label style="font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap">
-        <input type="checkbox" id="pinNew" style="accent-color:var(--amber)"/> Pin this
+        <input type="checkbox" id="pinNew" style="accent-color:var(--amber)"/> Pin
       </label>
     </div>
     <div class="ta-wrap">
@@ -297,13 +513,13 @@ create policy "open" on clips for all using (true) with check (true);</div>
     </div>
     <div class="filter-btns">
       <button class="flt active" data-f="all" onclick="setFilter(this)">All</button>
-      <button class="flt" data-f="pinned" onclick="setFilter(this)">📌 Pinned</button>
+      <button class="flt" data-f="pinned" onclick="setFilter(this)">📌</button>
       <button class="flt" data-f="url" onclick="setFilter(this)">Links</button>
       <button class="flt" data-f="code" onclick="setFilter(this)">Code</button>
     </div>
     <select class="sort-sel" id="sortSel" onchange="applyFilter()">
-      <option value="newest">Newest first</option>
-      <option value="oldest">Oldest first</option>
+      <option value="newest">Newest</option>
+      <option value="oldest">Oldest</option>
       <option value="longest">Longest</option>
       <option value="copied">Most copied</option>
     </select>
@@ -314,66 +530,346 @@ create policy "open" on clips for all using (true) with check (true);</div>
     <div class="clips-title">Saved clips</div>
     <div style="display:flex;align-items:center;gap:8px">
       <span class="count" id="clipCount">0</span>
-      <button class="btn btn-ghost btn-sm" onclick="fetchClips()">↻ Refresh</button>
+      <button class="btn btn-ghost btn-sm" onclick="fetchClips()">↻</button>
       <button class="btn btn-ghost btn-sm" style="color:var(--red)" onclick="openClearModal()">Clear all</button>
     </div>
   </div>
   <hr>
   <div id="clipsList">
-    <div class="empty"><div class="empty-icon">☁</div><p>Join a room and push your first clip.<br>Syncs in real time across devices.</p></div>
+    <div class="empty"><div class="empty-icon">☁</div><p>Connect to Supabase, then join a room.</p></div>
   </div>
 
-</div>
+</div><!-- /wrap -->
 
 <script>
-var sbUrl='',sbKey='',room='',clips=[],activeFilter='all',sbClient=null,realtimeCh=null,pendingDelId=null;
+// ════════════════════════════════════════════════════
+//  State
+// ════════════════════════════════════════════════════
+var sbUrl='', sbKey='', room='', clips=[], activeFilter='all';
+var sbClient=null, realtimeCh=null, pendingDelId=null;
+var roomPasswordHash='', isLocked=false, inactivityTimer=null;
+var allRooms=[];
+var prefs={stats:true,compact:false,device:true,realtime:true,mask:false,autolock:false};
 
 function hdr(){return{'Content-Type':'application/json','apikey':sbKey,'Authorization':'Bearer '+sbKey}}
 
+// ════════════════════════════════════════════════════
+//  Boot
+// ════════════════════════════════════════════════════
+function boot(){
+  checkHttps();
+  loadSaved();
+  loadPrefs();
+  loadDeviceName();
+
+  var sc=document.createElement('script');
+  sc.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+  sc.onload=function(){
+    if(sbUrl&&sbKey){
+      sbClient=window.supabase.createClient(sbUrl,sbKey);
+      loadAvailableRooms();
+    }
+  };
+  document.head.appendChild(sc);
+
+  // inactivity watcher
+  ['click','keydown','mousemove'].forEach(function(ev){
+    document.addEventListener(ev,resetInactivity,{passive:true});
+  });
+}
+
+// ════════════════════════════════════════════════════
+//  HTTPS check
+// ════════════════════════════════════════════════════
+function checkHttps(){
+  var isSecure=location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1';
+  if(!isSecure){
+    document.getElementById('copyFallback').classList.add('show');
+  }
+}
+
+function canUseClipboard(){
+  return (location.protocol==='https:'||location.hostname==='localhost'||location.hostname==='127.0.0.1')
+    && navigator.clipboard && typeof navigator.clipboard.writeText==='function';
+}
+
+// ════════════════════════════════════════════════════
+//  Persist / load
+// ════════════════════════════════════════════════════
 function loadSaved(){
-  var c=JSON.parse(localStorage.getItem('cc_sb4')||'null');
+  var c=JSON.parse(localStorage.getItem('cc_v3')||'null');
   if(!c)return;
-  sbUrl=c.url;sbKey=c.key;
-  document.getElementById('sbUrl').value=sbUrl;
-  document.getElementById('sbKey').value=sbKey;
-  document.getElementById('setupCard').style.display='none';
-  document.getElementById('showSetupWrap').style.display='';
+  sbUrl=c.url; sbKey=c.key;
+  document.getElementById('s-sbUrl').value=sbUrl;
+  document.getElementById('s-sbKey').value=sbKey;
   setStatus('ok','configured');
+  updateConnBadge('ok');
 }
 
-async function connect(){
-  sbUrl=document.getElementById('sbUrl').value.trim().replace(/\/$/,'');
-  sbKey=document.getElementById('sbKey').value.trim();
-  if(!sbUrl||!sbKey){toast('Enter URL and key.','err');return}
+function loadPrefs(){
+  var p=JSON.parse(localStorage.getItem('cc_prefs')||'null');
+  if(p)prefs=Object.assign(prefs,p);
+  document.getElementById('tog-stats').checked=prefs.stats;
+  document.getElementById('tog-compact').checked=prefs.compact;
+  document.getElementById('tog-device').checked=prefs.device;
+  document.getElementById('tog-realtime').checked=prefs.realtime;
+  document.getElementById('tog-mask').checked=prefs.mask;
+  document.getElementById('tog-autolock').checked=prefs.autolock;
+  applyCompact();
+  if(prefs.mask)document.body.classList.add('masked');
+}
+
+function saveDisplayPrefs(){
+  prefs.stats=document.getElementById('tog-stats').checked;
+  prefs.compact=document.getElementById('tog-compact').checked;
+  prefs.device=document.getElementById('tog-device').checked;
+  prefs.realtime=document.getElementById('tog-realtime').checked;
+  prefs.mask=document.getElementById('tog-mask').checked;
+  prefs.autolock=document.getElementById('tog-autolock').checked;
+  localStorage.setItem('cc_prefs',JSON.stringify(prefs));
+  updateStats();
+  applyFilter();
+}
+
+function loadDeviceName(){
+  var dn=localStorage.getItem('cc_device');
+  if(dn)document.getElementById('s-deviceName').value=dn;
+}
+
+function saveDeviceName(){
+  var v=document.getElementById('s-deviceName').value.trim();
+  if(!v){toast('Enter a device name.','err');return}
+  localStorage.setItem('cc_device',v);
+  toast('Device name saved.','ok');
+}
+
+function getDeviceName(){
+  return localStorage.getItem('cc_device')||navigator.platform||'unknown';
+}
+
+// ════════════════════════════════════════════════════
+//  Settings popup
+// ════════════════════════════════════════════════════
+function openSettings(){document.getElementById('settingsOverlay').classList.remove('hidden')}
+function closeSettings(){document.getElementById('settingsOverlay').classList.add('hidden')}
+function closeSettingsOutside(e){if(e.target===document.getElementById('settingsOverlay'))closeSettings()}
+
+function switchTab(btn,tabId){
+  document.querySelectorAll('.stab').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  document.querySelectorAll('.settings-body').forEach(function(t){t.classList.add('hidden')});
+  document.getElementById(tabId).classList.remove('hidden');
+}
+
+// ════════════════════════════════════════════════════
+//  Connection
+// ════════════════════════════════════════════════════
+async function connectFromSettings(){
+  var url=document.getElementById('s-sbUrl').value.trim().replace(/\/$/,'');
+  var key=document.getElementById('s-sbKey').value.trim();
+  if(!url||!key){toast('Enter URL and key.','err');return}
   try{
-    var r=await fetch(sbUrl+'/rest/v1/clips?limit=1',{headers:hdr()});
-    if(!r.ok)throw new Error('HTTP '+r.status+' — check credentials or run the SQL setup first.');
-    localStorage.setItem('cc_sb4',JSON.stringify({url:sbUrl,key:sbKey}));
+    var r=await fetch(url+'/rest/v1/clips?limit=1',{headers:{'apikey':key,'Authorization':'Bearer '+key}});
+    if(!r.ok)throw new Error('HTTP '+r.status+'. Check credentials or run SQL setup first.');
+    sbUrl=url; sbKey=key;
+    localStorage.setItem('cc_v3',JSON.stringify({url:sbUrl,key:sbKey}));
     setStatus('ok','connected');
-    toggleSetup();
-    toast('Connected to Supabase ✓','ok');
-    if(window.supabase)sbClient=window.supabase.createClient(sbUrl,sbKey);
-  }catch(e){setStatus('err','error');toast(e.message,'err')}
+    updateConnBadge('ok');
+    toast('Connected ✓','ok');
+    if(window.supabase){sbClient=window.supabase.createClient(sbUrl,sbKey);loadAvailableRooms()}
+  }catch(e){setStatus('err','error');updateConnBadge('err');toast(e.message,'err')}
 }
 
-function toggleSetup(){
-  var card=document.getElementById('setupCard');
-  var wrap=document.getElementById('showSetupWrap');
-  var hidden=card.style.display==='none';
-  card.style.display=hidden?'':'none';
-  wrap.style.display=hidden?'none':'';
+function disconnectSupabase(){
+  if(!confirm('Disconnect and clear saved credentials?'))return;
+  sbUrl='';sbKey='';sbClient=null;
+  localStorage.removeItem('cc_v3');
+  setStatus('','not connected');
+  updateConnBadge('idle');
+  document.getElementById('s-sbUrl').value='';
+  document.getElementById('s-sbKey').value='';
+  toast('Disconnected.','info');
 }
 
+function updateConnBadge(state){
+  var b=document.getElementById('connBadge');
+  b.className='conn-badge '+state;
+  b.textContent=state==='ok'?'connected':state==='err'?'error':'not connected';
+}
+
+// ════════════════════════════════════════════════════
+//  Security — password
+// ════════════════════════════════════════════════════
+async function sha256(str){
+  var buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(function(b){return b.toString(16).padStart(2,'0')}).join('');
+}
+
+function togglePwdSection(){
+  var on=document.getElementById('tog-roomPwd').checked;
+  document.getElementById('pwdSection').style.display=on?'block':'none';
+  if(!on){document.getElementById('pwdBadge').className='s-badge';document.getElementById('pwdBadge').textContent='off'}
+}
+
+async function saveRoomPassword(){
+  var pwd=document.getElementById('s-roomPwd').value;
+  if(!pwd){toast('Enter a password.','err');return}
+  if(!room){toast('Join a room first.','err');return}
+  var hash=await sha256(room+':'+pwd);
+  localStorage.setItem('cc_pwd_'+room,hash);
+  roomPasswordHash=hash;
+  document.getElementById('pwdBadge').className='s-badge';
+  document.getElementById('pwdBadge').textContent='active';
+  document.getElementById('s-roomPwd').value='';
+  toast('Room password saved.','ok');
+}
+
+function clearRoomPassword(){
+  if(!room)return;
+  localStorage.removeItem('cc_pwd_'+room);
+  roomPasswordHash='';
+  document.getElementById('tog-roomPwd').checked=false;
+  togglePwdSection();
+  toast('Password cleared.','info');
+}
+
+async function checkRoomPassword(){
+  if(!room)return true;
+  var stored=localStorage.getItem('cc_pwd_'+room);
+  if(!stored)return true; // no password set
+  roomPasswordHash=stored;
+  // show lock screen
+  return new Promise(function(resolve){
+    document.getElementById('lockScreen').classList.remove('hidden');
+    document.getElementById('lockInput').value='';
+    document.getElementById('lockErr').textContent='';
+    document.getElementById('lockInput').focus();
+    window._lockResolve=resolve;
+  });
+}
+
+async function submitLock(){
+  var pwd=document.getElementById('lockInput').value;
+  var hash=await sha256(room+':'+pwd);
+  if(hash===roomPasswordHash){
+    document.getElementById('lockScreen').classList.add('hidden');
+    document.getElementById('lockErr').textContent='';
+    if(window._lockResolve)window._lockResolve(true);
+  } else {
+    document.getElementById('lockErr').textContent='Incorrect password.';
+    document.getElementById('lockInput').value='';
+  }
+}
+
+function hideLock(){
+  document.getElementById('lockScreen').classList.add('hidden');
+  if(window._lockResolve)window._lockResolve(false);
+}
+
+// ── Auto-lock ──────────────────────────────────────
+function resetInactivity(){
+  if(!prefs.autolock||!roomPasswordHash)return;
+  clearTimeout(inactivityTimer);
+  inactivityTimer=setTimeout(function(){
+    if(prefs.autolock&&roomPasswordHash){
+      document.getElementById('lockScreen').classList.remove('hidden');
+      document.getElementById('lockInput').value='';
+      document.getElementById('lockErr').textContent='';
+    }
+  },5*60*1000); // 5 minutes
+}
+
+// ── Mask mode ──────────────────────────────────────
+function applyMask(){
+  saveDisplayPrefs();
+  if(prefs.mask)document.body.classList.add('masked');
+  else document.body.classList.remove('masked');
+}
+
+// ── Compact mode ───────────────────────────────────
+function applyCompact(){
+  if(prefs.compact)document.body.classList.add('compact');
+  else document.body.classList.remove('compact');
+}
+
+function clearLocalData(){
+  if(!confirm('Clear all local CloudClip data from this device?'))return;
+  var keys=[];
+  for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k&&k.startsWith('cc_'))keys.push(k)}
+  keys.forEach(function(k){localStorage.removeItem(k)});
+  toast('Local data cleared. Reload the page.','warn');
+}
+
+// ════════════════════════════════════════════════════
+//  Available rooms list
+// ════════════════════════════════════════════════════
+async function loadAvailableRooms(){
+  if(!sbKey){document.getElementById('roomChips').innerHTML='<span class="room-loading">Connect to Supabase to see rooms.</span>';return}
+  document.getElementById('roomChips').innerHTML='<span class="room-loading">Loading…</span>';
+  try{
+    // get distinct rooms + count from Supabase
+    var r=await fetch(sbUrl+'/rest/v1/clips?select=room&order=created_at.desc',{headers:hdr()});
+    if(!r.ok)throw new Error(await r.text());
+    var data=await r.json();
+    // count per room
+    var map={};
+    data.forEach(function(c){map[c.room]=(map[c.room]||0)+1});
+    allRooms=Object.keys(map).map(function(k){return{name:k,count:map[k]}});
+    allRooms.sort(function(a,b){return b.count-a.count});
+    renderRoomChips(allRooms);
+  }catch(e){
+    document.getElementById('roomChips').innerHTML='<span class="room-loading">Could not load rooms.</span>';
+  }
+}
+
+function renderRoomChips(list){
+  var el=document.getElementById('roomChips');
+  if(!list.length){el.innerHTML='<span class="room-empty">No rooms yet.</span>';return}
+  el.innerHTML=list.map(function(r){
+    var active=r.name===room;
+    return'<button class="room-chip'+(active?' active-room':'')+'" onclick="selectRoom(\''+esc(r.name)+'\')">'+(active?'<span class="room-chip-dot"></span>':'')+esc(r.name)+'<span class="room-chip-count">'+r.count+'</span></button>';
+  }).join('');
+}
+
+function filterRoomChips(){
+  var q=document.getElementById('roomInput').value.toLowerCase();
+  if(!q){renderRoomChips(allRooms);return}
+  renderRoomChips(allRooms.filter(function(r){return r.name.toLowerCase().includes(q)}));
+}
+
+function selectRoom(name){
+  document.getElementById('roomInput').value=name;
+  joinRoom();
+}
+
+// ════════════════════════════════════════════════════
+//  Room join
+// ════════════════════════════════════════════════════
 async function joinRoom(){
-  if(!sbKey){toast('Connect to Supabase first.','err');return}
+  if(!sbKey){toast('Connect to Supabase first (Settings ⚙).','err');return}
   var val=document.getElementById('roomInput').value.trim().replace(/[^a-z0-9_-]/gi,'-');
   if(!val){toast('Enter a room name.','err');return}
+
+  // password check
+  var tempRoom=room;
   room=val;
+  var ok=await checkRoomPassword();
+  if(!ok){room=tempRoom;return}
+
   document.getElementById('roomName').textContent=room;
   document.getElementById('roomLabel').style.display='';
+
+  // update password toggle UI
+  var hasPwd=!!localStorage.getItem('cc_pwd_'+room);
+  document.getElementById('tog-roomPwd').checked=hasPwd;
+  document.getElementById('pwdBadge').textContent=hasPwd?'active':'off';
+  togglePwdSection();
+
   await fetchClips();
-  setupRealtime();
+  if(prefs.realtime)setupRealtime();
+  await loadAvailableRooms();
   toast('Joined "'+room+'"','info');
+  resetInactivity();
 }
 
 function randRoom(){
@@ -381,6 +877,9 @@ function randRoom(){
   document.getElementById('roomInput').value=w[Math.floor(Math.random()*w.length)]+'-'+Math.floor(100+Math.random()*900);
 }
 
+// ════════════════════════════════════════════════════
+//  Fetch clips
+// ════════════════════════════════════════════════════
 async function fetchClips(){
   if(!room)return;
   try{
@@ -392,6 +891,9 @@ async function fetchClips(){
   }catch(e){toast('Load error: '+e.message,'err')}
 }
 
+// ════════════════════════════════════════════════════
+//  Realtime
+// ════════════════════════════════════════════════════
 function setupRealtime(){
   if(!sbClient){document.getElementById('rtStatus').textContent='realtime unavailable';return}
   if(realtimeCh)sbClient.removeChannel(realtimeCh);
@@ -415,6 +917,9 @@ function setupRealtime(){
     });
 }
 
+// ════════════════════════════════════════════════════
+//  Push clip
+// ════════════════════════════════════════════════════
 async function pushClip(){
   if(!room){toast('Join a room first.','err');return}
   var text=document.getElementById('clipText').value.trim();
@@ -427,7 +932,7 @@ async function pushClip(){
     var r=await fetch(sbUrl+'/rest/v1/clips',{
       method:'POST',
       headers:Object.assign({},hdr(),{'Prefer':'return=representation'}),
-      body:JSON.stringify({room:room,text:text,device:navigator.platform||'unknown',tags:tags,pinned:pinned,type:type,copy_count:0})
+      body:JSON.stringify({room:room,text:text,device:getDeviceName(),tags:tags,pinned:pinned,type:type,copy_count:0})
     });
     if(!r.ok)throw new Error(await r.text());
     var rows=await r.json();
@@ -438,28 +943,81 @@ async function pushClip(){
     document.getElementById('pinNew').checked=false;
     onType();
     toast('Pushed ✓','ok');
+    loadAvailableRooms();
   }catch(e){toast('Push failed: '+e.message,'err')}
 }
 
-function detectType(text){
-  if(/^https?:\/\//i.test(text.trim()))return'url';
-  if(/[\{\}\[\]<>]|function |def |class |import |const |var |let /.test(text))return'code';
+function detectType(t){
+  if(/^https?:\/\//i.test(t.trim()))return'url';
+  if(/[\{\}\[\]<>]|function |def |class |import |const |var |let /.test(t))return'code';
   return'text';
 }
 
 function onType(){
   var t=document.getElementById('clipText').value;
   document.getElementById('charCount').textContent=t.length.toLocaleString();
-  var type=detectType(t);
-  var labels={url:'type: url 🔗',code:'type: code {}',text:'type: text'};
-  document.getElementById('typeDetect').textContent=labels[type]||'type: text';
+  var tp=detectType(t);
+  document.getElementById('typeDetect').textContent=tp==='url'?'type: url 🔗':tp==='code'?'type: code {}':'type: text';
 }
 
+// ════════════════════════════════════════════════════
+//  Copy — works on HTTPS; fallback on HTTP
+// ════════════════════════════════════════════════════
+async function copyClip(text,id,btn){
+  var copied=false;
+
+  if(canUseClipboard()){
+    try{await navigator.clipboard.writeText(text);copied=true}catch(e){}
+  }
+
+  if(!copied){
+    // fallback: execCommand
+    var ta=document.createElement('textarea');
+    ta.value=text;
+    ta.style.cssText='position:fixed;top:-9999px;left:-9999px;opacity:0';
+    document.body.appendChild(ta);
+    ta.focus();ta.select();
+    try{copied=document.execCommand('copy')}catch(e){}
+    document.body.removeChild(ta);
+  }
+
+  if(copied){
+    showCopyTip(btn);
+    // increment copy_count
+    var c=clips.find(function(x){return x.id===id});
+    if(c){
+      c.copy_count=(c.copy_count||0)+1;
+      try{
+        await fetch(sbUrl+'/rest/v1/clips?id=eq.'+id,{
+          method:'PATCH',
+          headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),
+          body:JSON.stringify({copy_count:c.copy_count})
+        });
+      }catch(e){}
+    }
+  } else {
+    toast('Copy failed — see Settings → SQL Setup for hosting tips.','err');
+  }
+}
+
+function showCopyTip(btn){
+  if(!btn)return;
+  var wrap=btn.closest?btn.closest('.ibw'):btn.parentElement;
+  if(wrap){
+    var tip=wrap.querySelector('.ctip');
+    if(tip){tip.textContent='Copied!';tip.classList.add('show');setTimeout(function(){tip.classList.remove('show')},1600)}
+  }
+  btn.classList.add('ok');
+  setTimeout(function(){btn.classList.remove('ok')},1600);
+}
+
+// ════════════════════════════════════════════════════
+//  Pin
+// ════════════════════════════════════════════════════
 async function togglePin(id,pinned){
   try{
     await fetch(sbUrl+'/rest/v1/clips?id=eq.'+id,{
-      method:'PATCH',
-      headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),
+      method:'PATCH',headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),
       body:JSON.stringify({pinned:!pinned})
     });
     var c=clips.find(function(x){return x.id===id});
@@ -468,86 +1026,60 @@ async function togglePin(id,pinned){
   }catch(e){toast('Pin failed.','err')}
 }
 
-async function copyClip(text,id,btn){
-  try{
-    await navigator.clipboard.writeText(text);
-    showCopyTip(btn);
-    var c=clips.find(function(x){return x.id===id});
-    if(c){
-      var newCount=(c.copy_count||0)+1;
-      c.copy_count=newCount;
-      try{
-        await fetch(sbUrl+'/rest/v1/clips?id=eq.'+id,{
-          method:'PATCH',
-          headers:Object.assign({},hdr(),{'Prefer':'return=minimal'}),
-          body:JSON.stringify({copy_count:newCount})
-        });
-      }catch(e){}
-    }
-  }catch(e){toast('Copy failed.','err')}
-}
-
-function showCopyTip(btn){
-  var wrap=btn.closest?btn.closest('.ibw'):btn.parentElement;
-  if(!wrap)return;
-  var tip=wrap.querySelector('.ctip');
-  if(!tip)return;
-  tip.textContent='Copied!';
-  tip.classList.add('show');
-  btn.classList.add('ok');
-  setTimeout(function(){tip.classList.remove('show');btn.classList.remove('ok')},1600);
-}
-
+// ════════════════════════════════════════════════════
+//  Delete
+// ════════════════════════════════════════════════════
 function askDelete(id,previewText){
   pendingDelId=id;
   document.getElementById('delPreview').textContent=previewText.slice(0,120)+(previewText.length>120?'…':'');
   document.getElementById('delModal').classList.remove('hidden');
   document.getElementById('delConfirmBtn').onclick=confirmDelete;
 }
-
-function closeDelModal(){
-  document.getElementById('delModal').classList.add('hidden');
-  pendingDelId=null;
-}
-
+function closeDelModal(){document.getElementById('delModal').classList.add('hidden');pendingDelId=null}
 async function confirmDelete(){
   if(!pendingDelId)return;
-  var id=pendingDelId;
-  closeDelModal();
+  var id=pendingDelId;closeDelModal();
   try{
     await fetch(sbUrl+'/rest/v1/clips?id=eq.'+id,{method:'DELETE',headers:hdr()});
     clips=clips.filter(function(c){return c.id!==id});
     updateStats();applyFilter();
     toast('Clip deleted.','warn');
+    loadAvailableRooms();
   }catch(e){toast('Delete failed.','err')}
 }
 
 function openClearModal(){
-  if(!room||clips.length===0){toast('No clips to clear.','info');return}
-  document.getElementById('clearMsg').textContent='This will permanently delete all '+clips.length+' clips in "'+room+'" from Supabase.';
+  if(!room||!clips.length){toast('No clips to clear.','info');return}
+  document.getElementById('clearMsg').textContent='Permanently delete all '+clips.length+' clips in "'+room+'"?';
   document.getElementById('clearModal').classList.remove('hidden');
 }
-
 async function confirmClearAll(){
   document.getElementById('clearModal').classList.add('hidden');
   try{
     await fetch(sbUrl+'/rest/v1/clips?room=eq.'+encodeURIComponent(room),{method:'DELETE',headers:hdr()});
     clips=[];updateStats();applyFilter();
     toast('All clips cleared.','warn');
+    loadAvailableRooms();
   }catch(e){toast('Failed: '+e.message,'err')}
 }
 
+// ════════════════════════════════════════════════════
+//  Paste / clear
+// ════════════════════════════════════════════════════
 async function pasteSystem(){
-  try{document.getElementById('clipText').value=await navigator.clipboard.readText();onType()}
-  catch(e){toast('Clipboard permission denied.','err')}
+  if(canUseClipboard()){
+    try{document.getElementById('clipText').value=await navigator.clipboard.readText();onType();return}catch(e){}
+  }
+  toast('Paste not available here — use Ctrl/Cmd+V directly.','info');
 }
 function clearTA(){document.getElementById('clipText').value='';onType()}
 
+// ════════════════════════════════════════════════════
+//  Filter / sort
+// ════════════════════════════════════════════════════
 function setFilter(btn){
   document.querySelectorAll('.flt').forEach(function(b){b.classList.remove('active')});
-  btn.classList.add('active');
-  activeFilter=btn.dataset.f;
-  applyFilter();
+  btn.classList.add('active');activeFilter=btn.dataset.f;applyFilter();
 }
 
 function applyFilter(newId){
@@ -557,7 +1089,7 @@ function applyFilter(newId){
   if(activeFilter==='pinned')list=list.filter(function(c){return c.pinned});
   else if(activeFilter==='url')list=list.filter(function(c){return c.type==='url'});
   else if(activeFilter==='code')list=list.filter(function(c){return c.type==='code'});
-  if(q)list=list.filter(function(c){return c.text.toLowerCase().indexOf(q)>-1||(c.tags||[]).some(function(t){return t.indexOf(q)>-1})});
+  if(q)list=list.filter(function(c){return c.text.toLowerCase().includes(q)||(c.tags||[]).some(function(t){return t.includes(q)})});
   if(sort==='oldest')list.sort(function(a,b){return new Date(a.created_at)-new Date(b.created_at)});
   else if(sort==='longest')list.sort(function(a,b){return b.text.length-a.text.length});
   else if(sort==='copied')list.sort(function(a,b){return(b.copy_count||0)-(a.copy_count||0)});
@@ -565,19 +1097,20 @@ function applyFilter(newId){
   render(list,newId);
 }
 
+// ════════════════════════════════════════════════════
+//  Stats
+// ════════════════════════════════════════════════════
 function updateStats(){
-  if(!clips.length){document.getElementById('statsBar').style.display='none';return}
-  document.getElementById('statsBar').style.display='';
+  var showStats=prefs.stats&&clips.length>0;
+  document.getElementById('statsBar').style.display=showStats?'':'none';
+  if(!showStats)return;
   var total=clips.length;
   var totalChars=clips.reduce(function(s,c){return s+c.text.length},0);
   var avg=Math.round(totalChars/total);
-  var devices=[];
-  clips.forEach(function(c){if(c.device&&devices.indexOf(c.device)<0)devices.push(c.device)});
+  var devMap={};clips.forEach(function(c){if(c.device)devMap[c.device]=true});
+  var devices=Object.keys(devMap);
   var pinned=clips.filter(function(c){return c.pinned}).length;
-  var today=clips.filter(function(c){
-    var d=new Date(c.created_at);var n=new Date();
-    return d.toDateString()===n.toDateString();
-  }).length;
+  var today=clips.filter(function(c){return new Date(c.created_at).toDateString()===new Date().toDateString()}).length;
   var oldest=clips[clips.length-1];
   document.getElementById('st-total').textContent=total;
   document.getElementById('st-chars').textContent=totalChars>=1000?(totalChars/1000).toFixed(1)+'k':totalChars;
@@ -589,6 +1122,9 @@ function updateStats(){
   document.getElementById('st-oldest').textContent=oldest?new Date(oldest.created_at).toLocaleDateString():'';
 }
 
+// ════════════════════════════════════════════════════
+//  Render
+// ════════════════════════════════════════════════════
 function render(list,newId){
   document.getElementById('clipCount').textContent=list.length+(list.length!==clips.length?'/'+clips.length:'');
   var el=document.getElementById('clipsList');
@@ -596,6 +1132,7 @@ function render(list,newId){
     el.innerHTML='<div class="empty"><div class="empty-icon">☁</div><p>'+(clips.length?'No clips match your filter.':'No clips yet. Push something above!')+'</p></div>';
     return;
   }
+  var showDevice=prefs.device;
   el.innerHTML=list.map(function(c){
     var dt=c.created_at?new Date(c.created_at).toLocaleString():'just now';
     var long=c.text.length>180;
@@ -603,16 +1140,17 @@ function render(list,newId){
     var pinCls=c.pinned?' pinned':'';
     var typeBadge=c.type==='url'?'<span class="clip-type-badge type-url">link</span>':c.type==='code'?'<span class="clip-type-badge type-code">code</span>':'';
     var tagHtml=(c.tags||[]).map(function(t){return'<span class="tag">'+esc(t)+'</span>'}).join('');
-    var copyCount=c.copy_count?'<span style="font-size:9px;color:var(--muted);margin-left:4px">copied '+c.copy_count+'x</span>':'';
-    var pinBadge=c.pinned?'<span class="tag" style="background:var(--amber-light);border-color:#e0c98a;color:var(--amber)">📌 pinned</span>':'';
+    var copyCount=c.copy_count?'<span style="font-size:9px;color:var(--muted);margin-left:4px">copied '+c.copy_count+'×</span>':'';
+    var deviceStr=showDevice?' · '+esc(c.device||'—'):'';
+    var pinBadge=c.pinned?'<span class="tag" style="background:var(--amber-light);border-color:#e0c98a;color:var(--amber)">📌</span>':'';
     return'<div class="clip'+isNew+pinCls+'" id="clip-'+c.id+'">'+
       '<div class="clip-top">'+
         '<div class="clip-meta">'+
-          '<div class="clip-time">'+typeBadge+esc(dt)+' · '+esc(c.device||'—')+copyCount+'</div>'+
+          '<div class="clip-time">'+typeBadge+esc(dt)+deviceStr+copyCount+'</div>'+
           ((tagHtml||c.pinned)?'<div class="clip-tags">'+pinBadge+tagHtml+'</div>':'')+
         '</div>'+
         '<div class="clip-btns">'+
-          '<div class="ibw"><button class="icon-btn" title="Copy" onclick="copyClip('+JSON.stringify(c.text)+',"'+c.id+'",this)">⎘</button><div class="ctip"></div><div class="hlabel">Copy</div></div>'+
+          '<div class="ibw"><button class="icon-btn" onclick="copyClip('+JSON.stringify(c.text)+',"'+c.id+'",this)">⎘</button><div class="ctip"></div><div class="hlabel">Copy</div></div>'+
           '<div class="ibw"><button class="icon-btn'+(c.pinned?' pinbtn':'')+'" onclick="togglePin(\''+c.id+'\','+c.pinned+')">'+(c.pinned?'📌':'·')+'</button><div class="hlabel">'+(c.pinned?'Unpin':'Pin')+'</div></div>'+
           '<div class="ibw"><button class="icon-btn" onclick="openDrawer(\''+c.id+'\')" style="font-size:11px">ℹ</button><div class="hlabel">Details</div></div>'+
           '<div class="ibw"><button class="icon-btn del" onclick="askDelete(\''+c.id+'\','+JSON.stringify(c.text)+')">✕</button><div class="hlabel">Delete</div></div>'+
@@ -632,9 +1170,11 @@ function toggleExpand(id,btn){
   btn.textContent=open?'▲ less':'▼ more';
 }
 
+// ════════════════════════════════════════════════════
+//  Detail drawer
+// ════════════════════════════════════════════════════
 function openDrawer(id){
-  var c=clips.find(function(x){return x.id===id});
-  if(!c)return;
+  var c=clips.find(function(x){return x.id===id});if(!c)return;
   var dt=c.created_at?new Date(c.created_at):null;
   var age=dt?Math.round((Date.now()-dt)/60000):0;
   var ageStr=age<60?age+'m ago':age<1440?Math.round(age/60)+'h ago':Math.round(age/1440)+'d ago';
@@ -647,55 +1187,57 @@ function openDrawer(id){
       (c.pinned?'<span class="d-pill" style="background:var(--amber-light);color:var(--amber);border-color:#e0c98a">📌 pinned</span>':'')+
       '<span class="d-pill">copied '+(c.copy_count||0)+'×</span>'+
     '</div></div>'+
-    '<div class="d-section"><div class="d-label">Statistics</div><div class="d-row">'+
+    '<div class="d-section"><div class="d-label">Stats</div><div class="d-row">'+
       '<span class="d-pill">'+c.text.length.toLocaleString()+' chars</span>'+
       '<span class="d-pill">'+words+' words</span>'+
       '<span class="d-pill">'+lines+' line'+(lines!==1?'s':'')+'</span>'+
     '</div></div>'+
     '<div class="d-section"><div class="d-label">Origin</div><div class="d-row">'+
-      '<span class="d-pill">💻 '+esc(c.device||'unknown')+'</span>'+
+      '<span class="d-pill">💻 '+esc(c.device||'—')+'</span>'+
       '<span class="d-pill">🏠 '+esc(c.room||room)+'</span>'+
-    '</div><div style="font-size:11px;color:var(--muted);margin-top:6px">'+
-      (dt?dt.toLocaleString():'')+' &nbsp;('+ageStr+')'+
-    '</div></div>'+
+    '</div><div style="font-size:11px;color:var(--muted);margin-top:6px">'+(dt?dt.toLocaleString():'')+' ('+ageStr+')</div></div>'+
     ((c.tags||[]).length?'<div class="d-section"><div class="d-label">Tags</div><div class="d-row">'+c.tags.map(function(t){return'<span class="d-pill">'+esc(t)+'</span>'}).join('')+'</div></div>':'')+
-    '<div class="d-section"><div class="d-label">Supabase record ID</div><div style="font-size:10px;color:var(--muted);font-family:inherit;word-break:break-all">'+c.id+'</div></div>'+
+    '<div class="d-section"><div class="d-label">Record ID</div><div style="font-size:10px;color:var(--muted);word-break:break-all">'+c.id+'</div></div>'+
     '<div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">'+
-      '<button class="btn btn-ghost btn-sm" onclick="copyClip('+JSON.stringify(c.text)+',"'+c.id+'",this)">Copy text</button>'+
+      '<button class="btn btn-ghost btn-sm" onclick="copyClip('+JSON.stringify(c.text)+',"'+c.id+'",this)">Copy</button>'+
       '<button class="btn btn-ghost btn-sm" onclick="togglePin(\''+c.id+'\','+c.pinned+')">'+(c.pinned?'Unpin':'Pin')+'</button>'+
       '<button class="btn btn-danger btn-sm" onclick="closeDrawer(null);askDelete(\''+c.id+'\','+JSON.stringify(c.text)+')">Delete</button>'+
     '</div>';
   document.getElementById('drawerBg').classList.remove('hidden');
 }
-
 function closeDrawer(e){
   if(e&&e.target!==document.getElementById('drawerBg'))return;
   document.getElementById('drawerBg').classList.add('hidden');
 }
 
+// ════════════════════════════════════════════════════
+//  Status / toast
+// ════════════════════════════════════════════════════
 function setStatus(type,txt){
-  document.getElementById('dot').className='dot '+type;
+  document.getElementById('dot').className='dot'+(type?' '+type:'');
   document.getElementById('statusTxt').textContent=txt;
 }
 
 function toast(msg,type){
   type=type||'info';
   var el=document.createElement('div');
-  el.className='toast '+type;
-  el.textContent=msg;
+  el.className='toast '+type;el.textContent=msg;
   document.getElementById('toasts').appendChild(el);
   setTimeout(function(){el.remove()},2800);
 }
 
+// ════════════════════════════════════════════════════
+//  Modal backdrop clicks
+// ════════════════════════════════════════════════════
 document.getElementById('delModal').addEventListener('click',function(e){if(e.target===this)closeDelModal()});
-document.getElementById('clearModal').addEventListener('click',function(e){if(e.target===this)document.getElementById('clearModal').classList.add('hidden')});
+document.getElementById('clearModal').addEventListener('click',function(e){if(e.target===this)this.classList.add('hidden')});
 
-loadSaved();
+// ── mask style injected dynamically ──────────────────
+var maskStyle=document.createElement('style');
+maskStyle.textContent='.masked .clip-body{filter:blur(6px);transition:filter .2s}.masked .clip:hover .clip-body{filter:none}.compact .clip{padding:9px 14px}.compact .clip-body{font-size:11.5px;max-height:60px}';
+document.head.appendChild(maskStyle);
 
-var sc=document.createElement('script');
-sc.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
-sc.onload=function(){if(sbUrl&&sbKey)sbClient=window.supabase.createClient(sbUrl,sbKey)};
-document.head.appendChild(sc);
+boot();
 </script>
 </body>
 </html>
